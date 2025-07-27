@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(43, 100%, 95%);
+  --foreground: hsl(81, 29%, 43%);
+  --muted: hsl(32, 25%, 90%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(43, 100%, 95%);
+  --popover-foreground: hsl(81, 29%, 43%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(81, 29%, 43%);
+  --border: hsl(32, 25%, 85%);
+  --input: hsl(32, 25%, 85%);
+  --primary: hsl(26, 47%, 65%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(43, 100%, 95%);
+  --secondary-foreground: hsl(81, 29%, 43%);
+  --accent: hsl(43, 100%, 95%);
+  --accent-foreground: hsl(81, 29%, 43%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(81, 29%, 43%);
+  --radius: 0.5rem;
+  --buff: hsl(26, 47%, 65%);
+  --desert-sand: hsl(32, 25%, 85%);
+  --champagne: hsl(43, 100%, 95%);
+  --ash-gray: hsl(54, 5%, 70%);
+  --sage: hsl(68, 16%, 60%);
+  --reseda: hsl(81, 29%, 43%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(26, 47%, 65%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-buff {
+    color: hsl(26, 47%, 65%);
+  }
+  
+  .text-desert-sand {
+    color: hsl(32, 25%, 85%);
+  }
+  
+  .text-champagne {
+    color: hsl(43, 100%, 95%);
+  }
+  
+  .text-ash-gray {
+    color: hsl(54, 5%, 70%);
+  }
+  
+  .text-sage {
+    color: hsl(68, 16%, 60%);
+  }
+  
+  .text-reseda {
+    color: hsl(81, 29%, 43%);
+  }
+  
+  .bg-buff {
+    background-color: hsl(26, 47%, 65%);
+  }
+  
+  .bg-desert-sand {
+    background-color: hsl(32, 25%, 85%);
+  }
+  
+  .bg-champagne {
+    background-color: hsl(43, 100%, 95%);
+  }
+  
+  .bg-ash-gray {
+    background-color: hsl(54, 5%, 70%);
+  }
+  
+  .bg-sage {
+    background-color: hsl(68, 16%, 60%);
+  }
+  
+  .bg-reseda {
+    background-color: hsl(81, 29%, 43%);
+  }
+  
+  .border-buff {
+    border-color: hsl(26, 47%, 65%);
+  }
+  
+  .border-desert-sand {
+    border-color: hsl(32, 25%, 85%);
+  }
+  
+  .border-sage {
+    border-color: hsl(68, 16%, 60%);
+  }
+  
+  .border-reseda {
+    border-color: hsl(81, 29%, 43%);
+  }
+
+  .hover\:bg-buff:hover {
+    background-color: hsl(26, 47%, 65%);
+  }
+  
+  .hover\:bg-sage:hover {
+    background-color: hsl(68, 16%, 60%);
+  }
+  
+  .hover\:text-buff:hover {
+    color: hsl(26, 47%, 65%);
+  }
+  
+  .hover\:text-sage:hover {
+    color: hsl(68, 16%, 60%);
+  }
+}
