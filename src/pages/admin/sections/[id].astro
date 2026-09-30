@@ -1,0 +1,76 @@
+---
+import Admin from '../../../layouts/Admin.astro';
+import FieldInput from '../../../components/admin/FieldInput.astro';
+import { backgrounds, normalize, sectionTypes, slugify } from '../../../lib/sections';
+import { getSections, saveSections } from '../../../lib/store';
+import { parseForm } from '../../../lib/util';
+import { publish } from '../../../lib/publish';
+
+const sections = await getSections();
+const section = sections.find((s) => s.id === Astro.params.id);
+if (!section) return Astro.redirect('/admin/sections');
+const def = sectionTypes[section.type];
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const anchor = slugify(String(form.get('anchor') ?? '')) || slugify(def.label);
+  if (sections.some((s) => s.id !== section.id && s.anchor === anchor)) {
+    error = `Another section already uses the link name “${anchor}”. Please choose a different one.`;
+  } else {
+    section.data = normalize(def.fields, parseForm(form, 'data.'));
+    section.anchor = anchor;
+    section.navLabel = String(form.get('navLabel') ?? '').trim();
+    section.visible = form.get('visible') === 'on';
+    const bg = String(form.get('background'));
+    if (backgrounds.some((b) => b.value === bg)) section.background = bg as typeof section.background;
+    await saveSections(sections);
+    await publish(Astro);
+    return Astro.redirect(`/admin/sections/${section.id}?saved=1`);
+  }
+}
+const isNew = Astro.url.searchParams.has('new');
+---
+<Admin title={`Edit: ${def.label}`}>
+  <a href="/admin/sections" class="mb-4 inline-block text-sm text-stone-600 hover:text-stone-900">← All sections</a>
+  {isNew && <p class="a-notice">New section added. Fill it in, tick “Show on the website”, then save.</p>}
+  {error && <p class="a-error" role="alert">{error}</p>}
+
+  <form method="post" class="space-y-6">
+    <div class="a-card space-y-5">
+      {def.fields.map((f) => <FieldInput field={f} name={`data.${f.name}`} value={section.data[f.name]} />)}
+    </div>
+
+    <details class="a-card" open={isNew || !!error}>
+      <summary class="cursor-pointer font-semibold">Layout & menu</summary>
+      <div class="mt-5 space-y-5">
+        <label class="flex items-center gap-3">
+          <input type="checkbox" name="visible" checked={section.visible} class="h-4 w-4 accent-emerald-700" />
+          <span class="text-sm font-medium">Show on the website</span>
+        </label>
+        <div>
+          <label class="a-label" for="navLabel">Menu label</label>
+          <input id="navLabel" name="navLabel" value={section.navLabel} class="a-input" />
+          <p class="a-help">If filled in, a link to this section appears in the top menu and footer.</p>
+        </div>
+        <div>
+          <label class="a-label" for="anchor">Link name</label>
+          <input id="anchor" name="anchor" value={section.anchor} required class="a-input" />
+          <p class="a-help">Used in links like <code>#{section.anchor}</code>. Buttons elsewhere can point here.</p>
+        </div>
+        <div>
+          <label class="a-label" for="background">Background</label>
+          <select id="background" name="background" class="a-input w-auto">
+            {backgrounds.map((b) => <option value={b.value} selected={b.value === section.background}>{b.label}</option>)}
+          </select>
+        </div>
+      </div>
+    </details>
+
+    <div class="sticky bottom-0 -mx-4 flex gap-3 border-t border-stone-200 bg-stone-100/95 px-4 py-3 backdrop-blur">
+      <button class="a-btn-primary">Save changes</button>
+      <a href="/admin/sections" class="a-btn-secondary">Cancel</a>
+      <a href={`/#${section.anchor}`} target="_blank" class="a-btn ml-auto text-stone-600 hover:bg-stone-200">View on site</a>
+    </div>
+  </form>
+</Admin>

@@ -1,0 +1,13 @@
+---
+// Shown only when a form is sent with JavaScript turned off.
+import Site from '../layouts/Site.astro';
+import { getSections, getSettings } from '../lib/store';
+const [settings, sections] = await Promise.all([getSettings(), getSections()]);
+---
+<Site settings={settings} sections={sections} title="Thank you">
+  <section class="py-32 text-center">
+    <h1 class="section-title">Thank you!</h1>
+    <p class="mb-8 opacity-80">Your message has been received.</p>
+    <a href="/" class="btn-primary">Back to home</a>
+  </section>
+</Site>

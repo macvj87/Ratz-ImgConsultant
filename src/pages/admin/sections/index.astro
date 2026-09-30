@@ -1,0 +1,96 @@
+---
+import Admin from '../../../layouts/Admin.astro';
+import Icon from '../../../components/Icon.astro';
+import { isSectionType, sectionTypes, slugify, type Section } from '../../../lib/sections';
+import { getSections, newId, saveSections } from '../../../lib/store';
+import { publish } from '../../../lib/publish';
+
+let sections = await getSections();
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const action = String(form.get('action'));
+  const id = String(form.get('id') ?? '');
+
+  if (action === 'add') {
+    const type = String(form.get('type'));
+    if (!isSectionType(type)) return Astro.redirect('/admin/sections');
+    const def = sectionTypes[type];
+    const taken = new Set(sections.map((s) => s.anchor));
+    let anchor = slugify(def.label);
+    for (let n = 2; taken.has(anchor); n++) anchor = `${slugify(def.label)}-${n}`;
+    const section: Section = {
+      id: newId(), type, visible: false, anchor, navLabel: '', background: def.background,
+      data: structuredClone(def.defaults),
+    };
+    await saveSections([...sections, section]);
+    return Astro.redirect(`/admin/sections/${section.id}?new=1`);
+  }
+  if (action === 'toggle') {
+    sections = sections.map((s) => (s.id === id ? { ...s, visible: !s.visible } : s));
+  } else if (action === 'delete') {
+    sections = sections.filter((s) => s.id !== id);
+  } else if (action === 'duplicate') {
+    const i = sections.findIndex((s) => s.id === id);
+    if (i >= 0) {
+      const copy = { ...structuredClone(sections[i]), id: newId(), visible: false, anchor: `${sections[i].anchor}-copy`, navLabel: '' };
+      sections.splice(i + 1, 0, copy);
+    }
+  }
+  await saveSections(sections);
+  await publish(Astro);
+  return Astro.redirect('/admin/sections?saved=1');
+}
+
+const title = (s: Section) => s.data.heading ? `${s.data.heading}${s.data.highlight ? ` ${s.data.highlight}` : ''}` : sectionTypes[s.type].label;
+---
+<Admin title="Sections">
+  <p class="mb-4 text-sm text-stone-600">
+    These are the parts of your home page, top to bottom. Drag them (or use the arrows) to change the order.
+    Hidden sections are kept but not shown on the site.
+  </p>
+  <p data-order-status class="mb-3 min-h-5 text-sm text-emerald-800" role="status"></p>
+
+  <ol data-sortable class="space-y-2">
+    {sections.map((s, i) => (
+      <li data-id={s.id} draggable="true" class:list={['a-card flex items-center gap-3 p-3! sm:p-3!', !s.visible && 'bg-stone-50']}>
+        <span class="hidden cursor-grab text-stone-400 sm:block" title="Drag to reorder"><Icon name="grip" /></span>
+        <div class="flex flex-col">
+          <button type="button" class="a-icon-btn h-6!" data-step="-1" disabled={i === 0} aria-label="Move up"><Icon name="arrow-up" size={14} /></button>
+          <button type="button" class="a-icon-btn h-6!" data-step="1" disabled={i === sections.length - 1} aria-label="Move down"><Icon name="arrow-down" size={14} /></button>
+        </div>
+        <a href={`/admin/sections/${s.id}`} class="min-w-0 flex-1">
+          <span class:list={['block truncate font-medium', !s.visible && 'text-stone-500']}>{title(s)}</span>
+          <span class="block text-xs text-stone-500">
+            {sectionTypes[s.type].label}{s.navLabel && ` · in menu as “${s.navLabel}”`}{!s.visible && ' · Hidden'}
+          </span>
+        </a>
+        <form method="post" class="flex items-center gap-1">
+          <input type="hidden" name="id" value={s.id} />
+          <button name="action" value="toggle" class="a-icon-btn" title={s.visible ? 'Hide' : 'Show'} aria-label={s.visible ? 'Hide section' : 'Show section'}>
+            <Icon name={s.visible ? 'eye' : 'eye-off'} size={18} />
+          </button>
+          <a href={`/admin/sections/${s.id}`} class="a-icon-btn" title="Edit" aria-label="Edit section"><Icon name="pencil" size={18} /></a>
+          <button name="action" value="duplicate" class="a-icon-btn hidden sm:inline-flex" title="Duplicate" aria-label="Duplicate section"><Icon name="plus" size={18} /></button>
+          <button name="action" value="delete" class="a-icon-btn hover:text-red-700" title="Delete" aria-label="Delete section"
+            data-confirm={`Delete “${title(s)}”? This can’t be undone.`}><Icon name="trash" size={18} /></button>
+        </form>
+      </li>
+    ))}
+  </ol>
+
+  <form method="post" class="a-card mt-8">
+    <input type="hidden" name="action" value="add" />
+    <h2 class="mb-1 font-semibold">Add a new section</h2>
+    <p class="mb-4 text-sm text-stone-600">It starts hidden, so you can fill it in before it goes live.</p>
+    <div class="grid gap-2 sm:grid-cols-2">
+      {Object.entries(sectionTypes).map(([type, def], i) => (
+        <label class="flex cursor-pointer gap-3 rounded-lg border border-stone-200 p-3 has-checked:border-emerald-600 has-checked:bg-emerald-50">
+          <input type="radio" name="type" value={type} checked={i === 0} class="mt-1 accent-emerald-700" />
+          <span><span class="block text-sm font-medium">{def.label}</span><span class="block text-xs text-stone-500">{def.description}</span></span>
+        </label>
+      ))}
+    </div>
+    <button class="a-btn-primary mt-4"><Icon name="plus" size={16} /> Add section</button>
+  </form>
+</Admin>

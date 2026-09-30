@@ -1,0 +1,35 @@
+---
+import Wrapper from './Wrapper.astro';
+import Heading from './Heading.astro';
+import { img, paragraphs } from '../../lib/util';
+import type { Section } from '../../lib/sections';
+interface Props { section: Section }
+const { section } = Astro.props;
+const d = section.data;
+---
+<Wrapper section={section}>
+  <Heading heading={d.heading} intro={d.intro} />
+  <div class:list={['grid grid-cols-1 items-center gap-12', d.image && 'md:grid-cols-2']}>
+    <div data-reveal="left">
+      {d.listTitle && <h3 class="mb-8 text-2xl font-bold text-accent">{d.listTitle}</h3>}
+      <ul class="space-y-4" data-stagger>
+        {d.items.map((item: string) => (
+          <li class="group flex items-start gap-4 text-lg" data-reveal="left">
+            <span class="text-xl text-primary transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">▶</span>
+            <span class="opacity-90">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    {d.image && (
+      <div class="zoom-img rounded-xl shadow-lg" data-reveal="zoom">
+        <img src={img(d.image, 800, 600)} alt="" loading="lazy" class="w-full scale-110" data-parallax />
+      </div>
+    )}
+  </div>
+  {d.closing && (
+    <div class="mx-auto mt-16 max-w-4xl space-y-4 text-center text-lg opacity-90" data-reveal>
+      {paragraphs(d.closing).map((p) => <p>{p}</p>)}
+    </div>
+  )}
+</Wrapper>

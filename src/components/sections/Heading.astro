@@ -1,0 +1,10 @@
+---
+interface Props { heading?: string; intro?: string }
+const { heading, intro } = Astro.props;
+---
+{(heading || intro) && (
+  <div class="mb-16 text-center" data-reveal>
+    {heading && <h2 class="section-title">{heading}</h2>}
+    {intro && <p class="section-intro">{intro}</p>}
+  </div>
+)}

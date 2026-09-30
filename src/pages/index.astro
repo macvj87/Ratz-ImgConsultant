@@ -1,0 +1,12 @@
+---
+import Site from '../layouts/Site.astro';
+import Sections from '../components/Sections.astro';
+import { getPosts, getSections, getSettings } from '../lib/store';
+
+Astro.cache.set({ maxAge: 31536000, tags: ['site'] });
+const [settings, sections, posts] = await Promise.all([getSettings(), getSections(), getPosts()]);
+const hero = sections.find((s) => s.visible && s.type === 'hero');
+---
+<Site settings={settings} sections={sections} image={hero?.data.image}>
+  <Sections sections={sections} settings={settings} posts={posts.filter((p) => p.published)} />
+</Site>

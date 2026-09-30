@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+import { formatDate, img } from '../lib/util';
+import type { Post } from '../lib/store';
+interface Props { post: Post }
+const { post } = Astro.props;
+---
+<article class="card-lift group flex flex-col overflow-hidden rounded-xl bg-page text-ink shadow-lg" data-reveal>
+  {post.image && (
+    <div class="zoom-img"><img src={img(post.image, 600, 400)} alt="" loading="lazy" width="600" height="400" class="h-48 w-full object-cover" /></div>
+  )}
+  <div class="flex flex-1 flex-col p-6">
+    <p class="mb-2 flex items-center gap-2 text-sm opacity-70"><Icon name="calendar" size={16} />{formatDate(post.date)}</p>
+    <h3 class="mb-3 text-xl font-bold text-accent"><a href={`/blog/${post.slug}`} class="hover:text-primary">{post.title}</a></h3>
+    <p class="mb-4 opacity-90">{post.excerpt}</p>
+    <a href={`/blog/${post.slug}`} class="mt-auto flex items-center gap-1 font-semibold text-primary hover:text-secondary" aria-label={`Read more: ${post.title}`}>
+      Read more <Icon name="arrow-right" size={16} class="transition-transform duration-300 group-hover:translate-x-1.5" />
+    </a>
+  </div>
+</article>

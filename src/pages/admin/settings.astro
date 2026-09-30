@@ -1,0 +1,148 @@
+---
+import Admin from '../../layouts/Admin.astro';
+import { getSettings, saveSettings, type Settings, type Theme } from '../../lib/store';
+import { defaultSettings } from '../../lib/seed';
+import { fonts, googleFontsUrl } from '../../lib/util';
+import { publish } from '../../lib/publish';
+
+const settings = await getSettings();
+const hex = /^#[0-9a-f]{6}$/i;
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const get = (k: string) => String(form.get(k) ?? '').replace(/\r\n/g, '\n').trim();
+
+  if (form.get('action') === 'reset-theme') {
+    await saveSettings({ ...settings, theme: { ...defaultSettings.theme } });
+    await publish(Astro);
+    return Astro.redirect('/admin/settings?saved=1');
+  }
+  const theme: Theme = { ...settings.theme };
+  for (const key of ['primary', 'secondary', 'accent', 'background', 'surface', 'text'] as const) {
+    if (hex.test(get(key))) theme[key] = get(key).toLowerCase();
+  }
+  for (const key of ['headingFont', 'bodyFont'] as const) {
+    if (fonts.includes(get(key))) theme[key] = get(key);
+  }
+  const url = (k: string) => (/^https?:\/\//.test(get(k)) ? get(k) : '');
+  const updated: Settings = {
+    siteName: get('siteName') || settings.siteName,
+    seoDescription: get('seoDescription'),
+    footerText: get('footerText'),
+    location: get('location'),
+    locationNote: get('locationNote'),
+    phone: get('phone'),
+    email: get('email'),
+    hours: get('hours'),
+    instagram: url('instagram'),
+    facebook: url('facebook'),
+    linkedin: url('linkedin'),
+    notifyEmail: get('notifyEmail'),
+    theme,
+  };
+  await saveSettings(updated);
+  await publish(Astro);
+  return Astro.redirect('/admin/settings?saved=1');
+}
+
+const s = settings;
+const t = s.theme;
+const colours = [
+  { key: 'primary', label: 'Buttons & highlights' },
+  { key: 'secondary', label: 'Button hover & sage band' },
+  { key: 'accent', label: 'Headings, footer & green band' },
+  { key: 'background', label: 'Page background' },
+  { key: 'surface', label: 'Soft background (e.g. reviews)' },
+  { key: 'text', label: 'Body text' },
+] as const;
+const text = [
+  { key: 'siteName', label: 'Business name' },
+  { key: 'seoDescription', label: 'Description for Google', area: true, help: 'One or two sentences shown under your site in search results.' },
+  { key: 'footerText', label: 'Footer text', area: true },
+] as const;
+const contact = [
+  { key: 'location', label: 'Location' },
+  { key: 'locationNote', label: 'Location note' },
+  { key: 'phone', label: 'Phone', help: 'Leave empty to hide.' },
+  { key: 'email', label: 'Email shown on site' },
+  { key: 'hours', label: 'Business hours', area: true, help: 'One line each.' },
+] as const;
+const social = [
+  { key: 'instagram', label: 'Instagram link' },
+  { key: 'facebook', label: 'Facebook link' },
+  { key: 'linkedin', label: 'LinkedIn link' },
+] as const;
+type Row = { key: keyof Settings; label: string; area?: boolean; help?: string };
+---
+<Admin title="Details & theme">
+  <link rel="stylesheet" href={googleFontsUrl(...fonts)} />
+  <form method="post" class="space-y-6">
+    {[
+      { title: 'Business', rows: text as readonly Row[] },
+      { title: 'Contact details', rows: contact as readonly Row[] },
+      { title: 'Social media', rows: social as readonly Row[], help: 'Paste the full link, e.g. https://instagram.com/yourname. Empty ones are hidden.' },
+    ].map((group) => (
+      <fieldset class="a-card space-y-4">
+        <legend class="float-left mb-1 w-full font-semibold">{group.title}</legend>
+        {group.help && <p class="a-help mt-0!">{group.help}</p>}
+        {group.rows.map((r) => (
+          <div>
+            <label class="a-label" for={r.key}>{r.label}</label>
+            {r.area
+              ? <textarea id={r.key} name={r.key} rows="3" class="a-input">{String(s[r.key])}</textarea>
+              : <input id={r.key} name={r.key} value={String(s[r.key])} class="a-input" type={['instagram', 'facebook', 'linkedin'].includes(r.key) ? 'url' : 'text'} />}
+            {r.help && <p class="a-help">{r.help}</p>}
+          </div>
+        ))}
+      </fieldset>
+    ))}
+
+    <fieldset class="a-card">
+      <legend class="float-left mb-1 w-full font-semibold">Enquiry alerts</legend>
+      <label class="a-label" for="notifyEmail">Send new enquiry emails to</label>
+      <input id="notifyEmail" name="notifyEmail" type="email" value={s.notifyEmail} placeholder={s.email} class="a-input" />
+      <p class="a-help">Leave empty to use the email shown on the site.</p>
+    </fieldset>
+
+    <fieldset class="a-card">
+      <legend class="float-left mb-4 w-full font-semibold">Colours & fonts</legend>
+      <div class="grid clear-both gap-4 sm:grid-cols-2">
+        {colours.map((c) => (
+          <div>
+            <label class="a-label" for={c.key}>{c.label}</label>
+            <div class="flex items-center gap-2">
+              <input type="color" value={t[c.key]} class="h-10 w-12 cursor-pointer rounded border border-stone-300 bg-white p-1" aria-label={`${c.label} colour picker`} />
+              <input id={c.key} name={c.key} value={t[c.key]} data-theme-var={c.key} data-color-text pattern="#[0-9a-fA-F]{6}" class="a-input w-32 font-mono" />
+            </div>
+          </div>
+        ))}
+        {([['headingFont', 'Heading font', 'heading-font'], ['bodyFont', 'Text font', 'body-font']] as const).map(([key, label, v]) => (
+          <div>
+            <label class="a-label" for={key}>{label}</label>
+            <select id={key} name={key} data-theme-var={v} class="a-input">
+              {fonts.map((f) => <option selected={f === t[key]} style={`font-family:'${f}'`}>{f}</option>)}
+            </select>
+          </div>
+        ))}
+      </div>
+
+      <p class="a-label clear-both mt-6">Preview</p>
+      <div data-theme-preview class="overflow-hidden rounded-lg border border-stone-200"
+        style={`--site-primary:${t.primary};--site-secondary:${t.secondary};--site-accent:${t.accent};--site-background:${t.background};--site-surface:${t.surface};--site-text:${t.text};--site-heading-font:'${t.headingFont}';--site-body-font:'${t.bodyFont}'`}>
+        <div class="p-6" style="background:var(--site-background);color:var(--site-text);font-family:var(--site-body-font)">
+          <p class="mb-2 text-2xl font-bold" style="color:var(--site-accent);font-family:var(--site-heading-font)">Your Colour & Style Expert</p>
+          <p class="mb-4">This is how your body text will look.</p>
+          <span class="inline-block rounded-lg px-4 py-2 font-semibold text-white" style="background:var(--site-primary)">Book a consultation</span>
+        </div>
+        <div class="p-4" style="background:var(--site-surface);color:var(--site-text);font-family:var(--site-body-font)">Soft background</div>
+        <div class="p-4 text-white" style="background:linear-gradient(to right,var(--site-secondary),var(--site-accent));font-family:var(--site-body-font)">Feature band</div>
+      </div>
+      <button form="reset-theme" class="a-btn-secondary mt-4" data-confirm="Put the colours and fonts back to the original design?">Reset colours & fonts</button>
+    </fieldset>
+
+    <div class="sticky bottom-0 -mx-4 border-t border-stone-200 bg-stone-100/95 px-4 py-3 backdrop-blur">
+      <button class="a-btn-primary">Save changes</button>
+    </div>
+  </form>
+  <form id="reset-theme" method="post"><input type="hidden" name="action" value="reset-theme" /></form>
+</Admin>

@@ -1,0 +1,41 @@
+---
+import AdminAuth from '../../layouts/AdminAuth.astro';
+import { createResetToken, resetEmailAllowed } from '../../lib/auth';
+import { emailConfigured, sendPasswordReset } from '../../lib/mailer';
+import { getSettings } from '../../lib/store';
+
+// The link always goes to her own saved address, never one typed on this page.
+const settings = await getSettings();
+const to = settings.notifyEmail || settings.email;
+const masked = to.replace(/^(.)[^@]*(@.*)$/, '$1•••$2');
+const canSend = emailConfigured() && !!to;
+
+let status: 'sent' | 'wait' | 'failed' | '' = '';
+if (Astro.request.method === 'POST' && canSend) {
+  if (!(await resetEmailAllowed())) {
+    status = 'wait';
+  } else {
+    const token = await createResetToken();
+    const link = new URL(`/admin/reset?token=${token}`, Astro.url).href;
+    status = (await sendPasswordReset(to, link)) ? 'sent' : 'failed';
+  }
+}
+---
+<AdminAuth title="Forgot password">
+  <h1 class="mb-4 text-xl font-semibold">Forgot your password?</h1>
+  {status === 'sent' ? (
+    <p class="a-notice" role="status">Done! Check <strong>{masked}</strong> for an email with a link to choose a new password. The link works for 1 hour.</p>
+  ) : !canSend ? (
+    <p class="mb-4 text-sm text-stone-600">
+      Password reset emails aren’t set up on this website yet. Please ask your web developer to reset your password.
+    </p>
+  ) : (
+    <form method="post">
+      {status === 'wait' && <p class="a-error" role="alert">A reset email was sent a moment ago. Please check your inbox (and spam folder), or try again in 5 minutes.</p>}
+      {status === 'failed' && <p class="a-error" role="alert">The email couldn’t be sent. Please try again later, or ask your web developer.</p>}
+      <p class="mb-4 text-sm text-stone-600">We’ll email a reset link to <strong>{masked}</strong>.</p>
+      <button class="a-btn-primary w-full">Email me a reset link</button>
+    </form>
+  )}
+  <a href="/admin/login" class="mt-4 block text-center text-sm text-stone-600 hover:text-stone-900">← Back to log in</a>
+</AdminAuth>

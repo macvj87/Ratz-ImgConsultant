@@ -1,0 +1,94 @@
+---
+import Admin from '../../layouts/Admin.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Admin title="Backup">
+  <div class="a-card mb-6">
+    <h2 class="mb-1 font-semibold">Download a backup</h2>
+    <p class="mb-4 text-sm text-stone-600">
+      One zip file with everything: sections, blog posts, details, theme, photos, enquiries and subscribers.
+      Keep a copy somewhere safe (e.g. Google Drive) every month or so.
+    </p>
+    <button type="button" class="a-btn-primary" data-backup><Icon name="arrow-down" size={16} /> Download backup</button>
+    <p data-backup-status class="mt-3 text-sm text-stone-700" role="status"></p>
+  </div>
+
+  <div class="a-card">
+    <h2 class="mb-1 font-semibold">Restore from a backup</h2>
+    <p class="mb-4 text-sm text-stone-600">
+      Replaces the current sections, blog posts, details and theme with the ones in the backup.
+      Photos, enquiries and subscribers from the backup are added back.
+    </p>
+    <label class="a-btn-danger">
+      <Icon name="upload" size={16} /> Choose backup file…
+      <input type="file" accept=".zip,application/zip" class="sr-only" data-restore />
+    </label>
+    <p data-restore-status class="mt-3 text-sm text-stone-700" role="status"></p>
+  </div>
+
+  <script>
+    import { strToU8, strFromU8, unzip, zip } from 'fflate';
+
+    const backupStatus = document.querySelector<HTMLElement>('[data-backup-status]')!;
+    const restoreStatus = document.querySelector<HTMLElement>('[data-restore-status]')!;
+    const ext: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/avif': 'avif' };
+
+    document.querySelector('[data-backup]')!.addEventListener('click', async (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      btn.disabled = true;
+      try {
+        backupStatus.textContent = 'Collecting content…';
+        const data = await (await fetch('/admin/api/backup')).json();
+        const files: Record<string, Uint8Array> = { 'backup.json': strToU8(JSON.stringify(data, null, 2)) };
+        for (const [i, m] of data.media.entries()) {
+          backupStatus.textContent = `Adding photo ${i + 1} of ${data.media.length}…`;
+          const res = await fetch(`/media/${m.id}`);
+          if (res.ok) files[`photos/${m.id}.${ext[m.contentType] ?? 'bin'}`] = new Uint8Array(await res.arrayBuffer());
+        }
+        backupStatus.textContent = 'Creating zip…';
+        const zipped = await new Promise<Uint8Array>((ok, fail) => zip(files, { level: 0 }, (err, out) => (err ? fail(err) : ok(out))));
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([zipped as BlobPart], { type: 'application/zip' }));
+        a.download = `website-backup-${new Date().toISOString().slice(0, 10)}.zip`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        backupStatus.textContent = 'Backup downloaded.';
+      } catch (err) {
+        backupStatus.textContent = `Backup failed: ${(err as Error).message}`;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.querySelector<HTMLInputElement>('[data-restore]')!.addEventListener('change', async (e) => {
+      const input = e.currentTarget as HTMLInputElement;
+      const file = input.files?.[0];
+      input.value = '';
+      if (!file || !confirm('Restore this backup? Your current sections, posts, details and theme will be replaced.')) return;
+      try {
+        restoreStatus.textContent = 'Reading backup…';
+        const files = await new Promise<Record<string, Uint8Array>>(async (ok, fail) =>
+          unzip(new Uint8Array(await file.arrayBuffer()), (err, out) => (err ? fail(err) : ok(out))));
+        if (!files['backup.json']) throw new Error('This zip is not a website backup.');
+        const data = JSON.parse(strFromU8(files['backup.json']));
+        for (const [i, m] of (data.media ?? []).entries()) {
+          const name = Object.keys(files).find((f) => f.startsWith(`photos/${m.id}.`));
+          if (!name) continue;
+          restoreStatus.textContent = `Restoring photo ${i + 1} of ${data.media.length}…`;
+          const photo = new File([files[name] as BlobPart], m.name, { type: m.contentType });
+          const body = new FormData();
+          body.append('file', photo);
+          body.append('id', m.id);
+          const res = await fetch('/admin/api/images', { method: 'POST', body });
+          if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || `Could not restore ${m.name}.`);
+        }
+        restoreStatus.textContent = 'Restoring content…';
+        const res = await fetch('/admin/api/backup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Restore failed.');
+        restoreStatus.textContent = 'Backup restored. The live site is updated.';
+      } catch (err) {
+        restoreStatus.textContent = `Restore failed: ${(err as Error).message}`;
+      }
+    });
+  </script>
+</Admin>

@@ -1,0 +1,166 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import type { Section } from '../lib/sections';
+import type { Settings } from '../lib/store';
+import { googleFontsUrl } from '../lib/util';
+
+interface Props {
+  settings: Settings;
+  sections: Section[];
+  title?: string;
+  description?: string;
+  image?: string;
+}
+const { settings, sections, title, description, image } = Astro.props;
+const t = settings.theme;
+const pageTitle = title ? `${title} | ${settings.siteName}` : settings.siteName;
+const desc = description || settings.seoDescription;
+const onHome = Astro.url.pathname === '/';
+// Menu links: sections that have a menu label and are showing.
+const nav = sections
+  .filter((s) => s.visible && s.navLabel)
+  .map((s) => ({ label: s.navLabel, href: `${onHome ? '' : '/'}#${s.anchor}`, isContact: s.type === 'contact' }));
+const socials = (['instagram', 'facebook', 'linkedin'] as const).filter((k) => settings[k]);
+const themeCss = `:root{--site-primary:${t.primary};--site-secondary:${t.secondary};--site-accent:${t.accent};--site-background:${t.background};--site-surface:${t.surface};--site-text:${t.text};--site-heading-font:'${t.headingFont}';--site-body-font:'${t.bodyFont}'}`;
+const ogImage = image ? new URL(image, Astro.url).href : undefined;
+---
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.url).href} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:type" content="website" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={googleFontsUrl(t.headingFont, t.bodyFont)} />
+    <style set:html={themeCss}></style>
+    <script is:inline>document.documentElement.classList.add('js')</script>
+  </head>
+  <body class="min-h-screen">
+    <div class="scroll-progress" aria-hidden="true"></div>
+    <header id="site-header" class="sticky top-0 z-50 bg-white/95 transition-all duration-300 [&.scrolled]:bg-white/80 [&.scrolled]:shadow-md [&.scrolled]:backdrop-blur-md">
+      <nav class="container-x flex h-16 items-center justify-between" aria-label="Main">
+        <a href="/" class="font-heading text-2xl font-bold text-accent transition-transform duration-300 hover:scale-105">{settings.siteName}</a>
+        <ul class="hidden items-center gap-2 md:flex">
+          {nav.map((n) => (
+            <li>
+              <a href={n.href} class={n.isContact
+                ? 'btn-shine relative ml-2 inline-block overflow-hidden rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-secondary hover:shadow-lg'
+                : 'relative px-3 py-2 text-sm font-medium text-ink/80 transition-colors hover:text-primary aria-[current=true]:text-primary after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-primary after:transition-transform after:duration-300 hover:after:scale-x-100 aria-[current=true]:after:scale-x-100'}>{n.label}</a>
+            </li>
+          ))}
+        </ul>
+        <button id="menu-btn" class="text-ink/80 hover:text-primary md:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+          <Icon name="menu" size={26} />
+        </button>
+      </nav>
+      <ul id="mobile-menu" class="hidden border-t border-surface bg-white px-4 pb-3 md:hidden">
+        {nav.map((n) => (
+          <li><a href={n.href} class="block py-3 text-base font-medium text-ink/80 hover:text-primary">{n.label}</a></li>
+        ))}
+      </ul>
+    </header>
+
+    <main><slot /></main>
+
+    <a href="#" id="to-top" aria-label="Back to top"
+      class="pointer-events-none fixed right-5 bottom-5 z-40 flex h-12 w-12 translate-y-4 items-center justify-center rounded-full bg-primary text-white opacity-0 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-secondary [&.show]:pointer-events-auto [&.show]:translate-y-0 [&.show]:opacity-100">
+      <Icon name="arrow-up" />
+    </a>
+
+    <footer class="bg-accent py-12 text-white">
+      <div class="container-x grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="md:col-span-2">
+          <p class="font-heading mb-4 text-2xl font-bold">{settings.siteName}</p>
+          <p class="mb-6 max-w-md text-page/90">{settings.footerText}</p>
+          {socials.length > 0 && (
+            <div class="flex gap-3">
+              {socials.map((s) => (
+                <a href={settings[s]} target="_blank" rel="noopener" class="rounded bg-primary p-2 transition-colors hover:bg-secondary" aria-label={s}>
+                  <Icon name={s} />
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+        {nav.length > 0 && (
+          <div>
+            <p class="mb-4 text-lg font-semibold">Quick links</p>
+            <ul class="space-y-2 text-page/90">
+              {nav.map((n) => <li><a href={n.href} class="hover:text-white">{n.label}</a></li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div class="container-x mt-8 border-t border-secondary pt-8 text-center text-page/90">
+        <p>&copy; {new Date().getFullYear()} {settings.siteName}. All rights reserved.{settings.location && ` | ${settings.location}`}</p>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.getElementById('menu-btn')!;
+      const menu = document.getElementById('mobile-menu')!;
+      btn.addEventListener('click', () => {
+        const open = menu.classList.toggle('hidden') === false;
+        btn.setAttribute('aria-expanded', String(open));
+      });
+      menu.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('a')) menu.classList.add('hidden');
+      });
+
+      // Header style, progress bar and back-to-top button follow the scroll position.
+      const header = document.getElementById('site-header')!;
+      const toTop = document.getElementById('to-top')!;
+      let ticking = false;
+      const onScroll = () => {
+        const y = window.scrollY;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        document.documentElement.style.setProperty('--progress', String(max > 0 ? y / max : 0));
+        header.classList.toggle('scrolled', y > 10);
+        toTop.classList.toggle('show', y > 700);
+        ticking = false;
+      };
+      addEventListener('scroll', () => {
+        if (!ticking) requestAnimationFrame(onScroll);
+        ticking = true;
+      }, { passive: true });
+      onScroll();
+
+      // Fade things in as they scroll into view. Children of [data-stagger] appear one after another.
+      document.querySelectorAll('[data-stagger]').forEach((group) => {
+        group.querySelectorAll(':scope > [data-reveal]').forEach((el, i) => (el as HTMLElement).style.setProperty('--i', String(i % 6)));
+      });
+      const reveal = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            reveal.unobserve(e.target);
+          }
+        }
+      }, { rootMargin: '0px 0px -10% 0px' });
+      document.querySelectorAll('[data-reveal]').forEach((el) => reveal.observe(el));
+
+      // Highlight the menu link for the section on screen.
+      const links = [...document.querySelectorAll<HTMLAnchorElement>('header a[href*="#"]')];
+      const spy = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          for (const a of links) a.toggleAttribute('aria-current', a.hash === `#${e.target.id}`);
+          for (const a of links) if (a.hasAttribute('aria-current')) a.setAttribute('aria-current', 'true');
+        }
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      for (const id of new Set(links.map((a) => a.hash.slice(1)))) {
+        const el = id && document.getElementById(id);
+        if (el) spy.observe(el);
+      }
+    </script>
+  </body>
+</html>

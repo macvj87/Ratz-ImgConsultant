@@ -1,0 +1,97 @@
+---
+import Admin from '../../../layouts/Admin.astro';
+import ImageInput from '../../../components/admin/ImageInput.astro';
+import { slugify } from '../../../lib/sections';
+import { getPosts, newId, savePosts, type Post } from '../../../lib/store';
+import { publish } from '../../../lib/publish';
+
+const posts = await getPosts();
+const isNew = Astro.params.id === 'new';
+const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Sydney' });
+let post: Post | undefined = isNew
+  ? { id: newId(), slug: '', title: '', date: today, excerpt: '', image: '', body: '', published: false }
+  : posts.find((p) => p.id === Astro.params.id);
+if (!post) return Astro.redirect('/admin/posts');
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const get = (k: string) => String(form.get(k) ?? '').replace(/\r\n/g, '\n').trim();
+
+  if (form.get('action') === 'delete') {
+    await savePosts(posts.filter((p) => p.id !== post!.id));
+    await publish(Astro);
+    return Astro.redirect('/admin/posts?saved=1');
+  }
+
+  const updated: Post = {
+    id: post.id,
+    title: get('title'),
+    slug: slugify(get('slug') || get('title')),
+    date: /^\d{4}-\d{2}-\d{2}$/.test(get('date')) ? get('date') : today,
+    excerpt: get('excerpt'),
+    image: get('image'),
+    body: get('body'),
+    published: form.get('published') === 'on',
+  };
+  post = updated;
+  if (!updated.title) error = 'Please give the post a title.';
+  else if (posts.some((p) => p.id !== updated.id && p.slug === updated.slug)) error = 'Another post already uses this web address. Please change it.';
+  else {
+    await savePosts(isNew ? [updated, ...posts] : posts.map((p) => (p.id === updated.id ? updated : p)));
+    await publish(Astro);
+    return Astro.redirect(`/admin/posts/${updated.id}?saved=1`);
+  }
+}
+---
+<Admin title={isNew ? 'New post' : 'Edit post'}>
+  <a href="/admin/posts" class="mb-4 inline-block text-sm text-stone-600 hover:text-stone-900">← All posts</a>
+  {error && <p class="a-error" role="alert">{error}</p>}
+  <form method="post" class="space-y-6">
+    <div class="a-card space-y-5">
+      <div>
+        <label class="a-label" for="title">Title</label>
+        <input id="title" name="title" value={post.title} required class="a-input text-lg" />
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label class="a-label" for="date">Date</label>
+          <input id="date" name="date" type="date" value={post.date} class="a-input" />
+        </div>
+        <div>
+          <label class="a-label" for="slug">Web address</label>
+          <input id="slug" name="slug" value={post.slug} placeholder="made from the title" class="a-input" />
+          <p class="a-help">/blog/{post.slug || '…'}</p>
+        </div>
+      </div>
+      <div>
+        <span class="a-label">Cover photo</span>
+        <ImageInput id="image" name="image" value={post.image} />
+      </div>
+      <div>
+        <label class="a-label" for="excerpt">Short summary</label>
+        <textarea id="excerpt" name="excerpt" rows="2" class="a-input">{post.excerpt}</textarea>
+        <p class="a-help">Shown on the blog cards and in Google results.</p>
+      </div>
+      <div>
+        <label class="a-label" for="body">Article</label>
+        <textarea id="body" name="body" rows="18" class="a-input font-mono text-sm">{post.body}</textarea>
+        <p class="a-help">
+          Leave a blank line between paragraphs. <code>## Heading</code> for a heading, <code>**bold**</code>, <code>*italic*</code>,
+          <code>- item</code> for a bullet list, <code>[link text](https://…)</code> for a link.
+        </p>
+      </div>
+      <label class="flex items-center gap-3">
+        <input type="checkbox" name="published" checked={post.published} class="h-4 w-4 accent-emerald-700" />
+        <span class="text-sm font-medium">Published (show on the website)</span>
+      </label>
+    </div>
+    <div class="sticky bottom-0 -mx-4 flex gap-3 border-t border-stone-200 bg-stone-100/95 px-4 py-3 backdrop-blur">
+      <button class="a-btn-primary">Save</button>
+      {!isNew && post.published && <a href={`/blog/${post.slug}`} target="_blank" class="a-btn-secondary">View</a>}
+      {!isNew && (
+        <button name="action" value="delete" class="a-btn-danger ml-auto" formnovalidate data-confirm="Delete this post? This can’t be undone.">Delete</button>
+      )}
+    </div>
+  </form>
+</Admin>

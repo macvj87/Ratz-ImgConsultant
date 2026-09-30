@@ -1,0 +1,35 @@
+---
+import AdminAuth from '../../layouts/AdminAuth.astro';
+import { passwordMatches, startSession, isLoggedIn } from '../../lib/auth';
+import { clearFailedLogins, isLockedOut, recordFailedLogin } from '../../lib/store';
+
+if (await isLoggedIn(Astro.cookies)) return Astro.redirect('/admin');
+
+let error = '';
+if (Astro.request.method === 'POST') {
+  const ip = Astro.clientAddress || 'unknown';
+  if (await isLockedOut(ip)) {
+    error = 'Too many wrong attempts. Please wait 15 minutes and try again.';
+  } else {
+    const form = await Astro.request.formData();
+    if (await passwordMatches(String(form.get('password') ?? ''))) {
+      await clearFailedLogins(ip);
+      await startSession(Astro.cookies, Astro.url.protocol === 'https:');
+      return Astro.redirect('/admin');
+    }
+    await recordFailedLogin(ip);
+    error = 'That password isn’t right.';
+  }
+}
+---
+<AdminAuth title="Log in">
+  <form method="post">
+    <h1 class="mb-6 text-xl font-semibold">Website admin</h1>
+    {Astro.url.searchParams.has('reset') && <p class="a-notice" role="status">Password changed. Please log in with your new password.</p>}
+    {error && <p class="a-error" role="alert">{error}</p>}
+    <label class="a-label" for="password">Password</label>
+    <input id="password" name="password" type="password" required autofocus autocomplete="current-password" class="a-input mb-4" />
+    <button class="a-btn-primary w-full">Log in</button>
+    <a href="/admin/forgot" class="mt-4 block text-center text-sm text-stone-600 hover:text-stone-900">Forgot password?</a>
+  </form>
+</AdminAuth>

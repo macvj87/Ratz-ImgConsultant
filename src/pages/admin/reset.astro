@@ -1,0 +1,39 @@
+---
+import AdminAuth from '../../layouts/AdminAuth.astro';
+import { MIN_PASSWORD_LENGTH, checkNewPassword, resetTokenValid, setPassword } from '../../lib/auth';
+import { clearFailedLogins } from '../../lib/store';
+
+const token = Astro.url.searchParams.get('token') ?? '';
+const valid = await resetTokenValid(token);
+let error = '';
+
+if (Astro.request.method === 'POST' && valid) {
+  const form = await Astro.request.formData();
+  const password = String(form.get('password') ?? '');
+  error = checkNewPassword(password, String(form.get('confirm') ?? ''));
+  if (!error) {
+    await setPassword(password); // also uses up the reset link
+    await clearFailedLogins(Astro.clientAddress || 'unknown');
+    return Astro.redirect('/admin/login?reset=1');
+  }
+}
+---
+<AdminAuth title="Choose a new password">
+  <h1 class="mb-4 text-xl font-semibold">Choose a new password</h1>
+  {valid ? (
+    <form method="post">
+      {error && <p class="a-error" role="alert">{error}</p>}
+      <label class="a-label" for="password">New password</label>
+      <input id="password" name="password" type="password" required minlength={MIN_PASSWORD_LENGTH} autocomplete="new-password" autofocus class="a-input" />
+      <p class="a-help mb-4">At least {MIN_PASSWORD_LENGTH} characters.</p>
+      <label class="a-label" for="confirm">Type it again</label>
+      <input id="confirm" name="confirm" type="password" required autocomplete="new-password" class="a-input mb-4" />
+      <button class="a-btn-primary w-full">Save new password</button>
+    </form>
+  ) : (
+    <>
+      <p class="a-error">This reset link has expired or has already been used. Please ask for a new one.</p>
+      <a href="/admin/forgot" class="a-btn-primary w-full">Get a new link</a>
+    </>
+  )}
+</AdminAuth>

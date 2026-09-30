@@ -1,0 +1,34 @@
+---
+import Wrapper from './Wrapper.astro';
+import Heading from './Heading.astro';
+import Icon from '../Icon.astro';
+import { img } from '../../lib/util';
+import type { Section } from '../../lib/sections';
+interface Props { section: Section; contactHref: string }
+const { section, contactHref } = Astro.props;
+const d = section.data;
+---
+<Wrapper section={section}>
+  <Heading heading={d.heading} intro={d.intro} />
+  <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" data-stagger>
+    {d.items.map((s: any) => (
+      <div class="card-lift group flex flex-col rounded-xl bg-page p-8 text-ink shadow-lg" data-reveal>
+        {s.image && (
+          <div class="zoom-img mb-6 rounded-lg">
+            <img src={img(s.image, 600, 400)} alt={s.title} loading="lazy" width="600" height="400" class="h-48 w-full object-cover" />
+          </div>
+        )}
+        <h3 class="mb-4 text-xl font-bold text-accent">{s.title}</h3>
+        {s.description && <p class="mb-6 opacity-90">{s.description}</p>}
+        {s.features.length > 0 && (
+          <ul class="mb-6 space-y-2 text-sm opacity-80">{s.features.map((f: string) => <li>• {f}</li>)}</ul>
+        )}
+        {d.linkLabel && (
+          <a href={contactHref} class="mt-auto flex items-center gap-1 font-semibold text-primary hover:text-secondary">
+            {d.linkLabel} <Icon name="arrow-right" size={16} class="transition-transform duration-300 group-hover:translate-x-1.5" />
+          </a>
+        )}
+      </div>
+    ))}
+  </div>
+</Wrapper>

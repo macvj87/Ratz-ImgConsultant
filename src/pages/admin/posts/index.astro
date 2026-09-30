@@ -1,0 +1,25 @@
+---
+import Admin from '../../../layouts/Admin.astro';
+import Icon from '../../../components/Icon.astro';
+import { getPosts } from '../../../lib/store';
+import { formatDate } from '../../../lib/util';
+
+const posts = await getPosts();
+---
+<Admin title="Blog">
+  <a href="/admin/posts/new" class="a-btn-primary mb-6"><Icon name="plus" size={16} /> New post</a>
+  {posts.length === 0 && <p class="text-stone-600">No posts yet.</p>}
+  <ul class="space-y-2">
+    {posts.map((p) => (
+      <li>
+        <a href={`/admin/posts/${p.id}`} class="a-card flex items-center gap-3 p-4! hover:border-stone-300">
+          <span class="min-w-0 flex-1">
+            <span class="block truncate font-medium">{p.title}</span>
+            <span class="block text-xs text-stone-500">{formatDate(p.date)}{!p.published && ' · Draft (not on the site)'}</span>
+          </span>
+          <Icon name="pencil" size={18} class="text-stone-400" />
+        </a>
+      </li>
+    ))}
+  </ul>
+</Admin>

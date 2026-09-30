@@ -1,0 +1,16 @@
+---
+import { img } from '../../lib/util';
+interface Props { id: string; name: string; value?: string }
+const { id, name, value = '' } = Astro.props;
+---
+<div class="flex items-center gap-4" data-image-field>
+  <input type="hidden" id={id} name={name} value={value} />
+  <div class="flex h-20 w-28 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-stone-200 bg-stone-100 text-xs text-stone-400">
+    <img data-preview src={value ? img(value, 240, 170) : ''} alt="" class:list={['h-full w-full object-cover', !value && 'hidden']} />
+    <span data-empty class:list={[value && 'hidden']}>No photo</span>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <button type="button" class="a-btn-secondary" data-pick>Choose photo</button>
+    <button type="button" class:list={['a-btn text-stone-500 hover:bg-stone-100', !value && 'hidden']} data-clear>Remove</button>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+---
+import { marked } from 'marked';
+import Site from '../../layouts/Site.astro';
+import { getPosts, getSections, getSettings } from '../../lib/store';
+import { formatDate, img } from '../../lib/util';
+
+Astro.cache.set({ maxAge: 31536000, tags: ['site'] });
+const [settings, sections, posts] = await Promise.all([getSettings(), getSections(), getPosts()]);
+const post = posts.find((p) => p.slug === Astro.params.slug && p.published);
+if (!post) return Astro.rewrite('/404');
+const html = await marked.parse(post.body);
+---
+<Site settings={settings} sections={sections} title={post.title} description={post.excerpt} image={post.image ? img(post.image, 1200, 630) : undefined}>
+  <article class="py-16">
+    <div class="hero-in mx-auto max-w-3xl px-4 sm:px-6">
+      <a href="/blog" class="text-sm font-semibold text-primary hover:text-secondary">← All articles</a>
+      <p class="mt-6 text-sm opacity-70">{formatDate(post.date)}</p>
+      <h1 class="mt-2 mb-8 text-4xl leading-tight font-bold text-accent sm:text-5xl">{post.title}</h1>
+      {post.image && <div class="zoom-img mb-10 rounded-2xl shadow-lg"><img src={img(post.image, 1200, 700)} alt="" width="1200" height="700" class="w-full" /></div>}
+      <div class="prose-post text-lg" set:html={html} />
+    </div>
+  </article>
+</Site>

@@ -1,0 +1,101 @@
+---
+import '../styles/admin.css';
+import Icon from '../components/Icon.astro';
+import { listEnquiries } from '../lib/store';
+
+interface Props { title: string; wide?: boolean }
+const { title, wide = false } = Astro.props;
+const unread = Astro.url.pathname === '/admin/login' ? 0 : (await listEnquiries()).filter((e) => !e.read).length;
+const links = [
+  { href: '/admin/sections', label: 'Sections', icon: 'layers' },
+  { href: '/admin/posts', label: 'Blog', icon: 'file-text' },
+  { href: '/admin/photos', label: 'Photos', icon: 'image' },
+  { href: '/admin/enquiries', label: 'Enquiries', icon: 'inbox', badge: unread },
+  { href: '/admin/subscribers', label: 'Subscribers', icon: 'users' },
+  { href: '/admin/settings', label: 'Details & theme', icon: 'palette' },
+  { href: '/admin/backup', label: 'Backup', icon: 'archive' },
+  { href: '/admin/password', label: 'Password', icon: 'key' },
+] as const;
+const current = Astro.url.pathname;
+const notice = Astro.url.searchParams.get('saved') ? 'Saved. The live site is updated.' : '';
+---
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{title} · Admin</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="min-h-screen bg-stone-100 text-stone-900 antialiased">
+    <!-- Phone/tablet top bar -->
+    <header class="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-stone-200 bg-white px-4 lg:hidden">
+      <a href="/admin" class="font-semibold">Website admin</a>
+      <button id="admin-menu-btn" class="a-icon-btn relative" aria-expanded="false" aria-controls="admin-sidebar" aria-label={unread ? `Open menu (${unread} new enquiries)` : 'Open menu'}>
+        <Icon name="menu" size={22} />
+        {unread > 0 && <span class="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-red-600 ring-2 ring-white" aria-hidden="true"></span>}
+      </button>
+    </header>
+    <div id="admin-overlay" class="pointer-events-none fixed inset-0 z-40 bg-black/40 opacity-0 transition-opacity lg:hidden [&.open]:pointer-events-auto [&.open]:opacity-100" aria-hidden="true"></div>
+
+    <aside id="admin-sidebar" aria-label="Admin menu"
+      class="fixed inset-y-0 left-0 z-50 flex w-60 max-w-[85vw] -translate-x-full flex-col border-r border-stone-200 bg-white transition-transform duration-300 lg:translate-x-0 [&.open]:translate-x-0 [&.open]:shadow-2xl">
+      <div class="flex items-center justify-between px-5 pt-6 pb-5">
+        <a href="/admin" class="font-semibold">Website admin</a>
+        <button id="admin-menu-close" class="a-icon-btn -mr-2 lg:hidden" aria-label="Close menu"><Icon name="x" size={20} /></button>
+      </div>
+      <nav class="flex-1 space-y-1 overflow-y-auto px-3" aria-label="Admin">
+        {links.map((l) => {
+          const active = current.startsWith(l.href);
+          return (
+            <a href={l.href} aria-current={active ? 'page' : undefined} class:list={[
+              'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+              active ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900',
+            ]}>
+              <Icon name={l.icon} size={18} class={active ? 'text-white' : 'text-stone-400'} />
+              <span class="flex-1">{l.label}</span>
+              {'badge' in l && l.badge ? <span class="rounded-full bg-red-600 px-1.5 text-xs text-white">{l.badge}</span> : null}
+            </a>
+          );
+        })}
+      </nav>
+      <div class="space-y-1 border-t border-stone-200 p-3">
+        <a href="/" target="_blank" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-stone-100 hover:text-stone-900">
+          <Icon name="external" size={18} class="text-stone-400" /> View site
+        </a>
+        <form method="post" action="/admin/logout">
+          <button class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-stone-100 hover:text-stone-900">
+            <Icon name="log-out" size={18} class="text-stone-400" /> Log out
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <main class:list={['px-4 py-8 lg:ml-60 lg:px-10']}>
+      <div class:list={['mx-auto', wide ? 'max-w-6xl' : 'max-w-3xl']}>
+        <h1 class="mb-6 text-2xl font-semibold">{title}</h1>
+        {notice && <p class="a-notice" role="status">{notice}</p>}
+        <slot />
+      </div>
+    </main>
+
+    <!-- Photo picker, used by every "Choose photo" button -->
+    <dialog id="media-picker" class="m-auto w-[min(56rem,calc(100vw-2rem))] rounded-xl p-0 shadow-2xl backdrop:bg-black/40">
+      <div class="flex items-center justify-between border-b border-stone-200 px-5 py-3">
+        <h2 class="font-semibold">Choose a photo</h2>
+        <button type="button" class="a-icon-btn" data-close aria-label="Close"><Icon name="x" /></button>
+      </div>
+      <div class="p-5">
+        <label class="a-btn-primary mb-4">
+          <Icon name="upload" size={16} /> Upload new photo
+          <input type="file" accept="image/*" multiple class="sr-only" data-upload />
+        </label>
+        <p data-upload-status class="mb-3 text-sm text-stone-600" role="status"></p>
+        <div data-grid class="grid max-h-[60vh] grid-cols-3 gap-3 overflow-y-auto sm:grid-cols-4 md:grid-cols-5"></div>
+      </div>
+    </dialog>
+
+    <script src="../scripts/admin.ts"></script>
+  </body>
+</html>

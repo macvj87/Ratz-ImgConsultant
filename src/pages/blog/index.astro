@@ -1,0 +1,25 @@
+---
+import Site from '../../layouts/Site.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPosts, getSections, getSettings } from '../../lib/store';
+
+Astro.cache.set({ maxAge: 31536000, tags: ['site'] });
+const [settings, sections, posts] = await Promise.all([getSettings(), getSections(), getPosts()]);
+const published = posts.filter((p) => p.published);
+const blog = sections.find((s) => s.type === 'blog');
+---
+<Site settings={settings} sections={sections} title={blog?.data.heading || 'Blog'} description={blog?.data.intro}>
+  <section class="py-20">
+    <div class="container-x">
+      <div class="hero-in mb-16 text-center">
+        <h1 class="section-title">{blog?.data.heading || 'Blog'}</h1>
+        {blog?.data.intro && <p class="section-intro">{blog.data.intro}</p>}
+      </div>
+      {published.length > 0 ? (
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" data-stagger>
+          {published.map((p) => <PostCard post={p} />)}
+        </div>
+      ) : <p class="text-center opacity-70">New articles coming soon.</p>}
+    </div>
+  </section>
+</Site>

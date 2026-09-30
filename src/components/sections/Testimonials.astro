@@ -1,0 +1,30 @@
+---
+import Wrapper from './Wrapper.astro';
+import Heading from './Heading.astro';
+import Icon from '../Icon.astro';
+import type { Section } from '../../lib/sections';
+interface Props { section: Section }
+const { section } = Astro.props;
+const d = section.data;
+---
+<Wrapper section={section}>
+  <Heading heading={d.heading} intro={d.intro} />
+  <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" data-stagger>
+    {d.items.map((t: any) => (
+      <figure class="card-lift relative overflow-hidden rounded-xl bg-white p-8 text-ink shadow-lg" data-reveal>
+        <span class="font-heading pointer-events-none absolute -top-4 right-4 text-9xl leading-none text-primary/15 select-none" aria-hidden="true">”</span>
+        <div class="mb-4 flex text-primary" aria-label="5 stars">
+          {[1, 2, 3, 4, 5].map(() => <Icon name="star" size={16} fill />)}
+        </div>
+        <blockquote class="mb-6 italic opacity-90">“{t.quote}”</blockquote>
+        <figcaption class="flex items-center">
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-primary font-bold text-white">{t.name?.[0] ?? ''}</span>
+          <span class="ml-4">
+            <span class="block font-semibold text-accent">{t.name}</span>
+            {t.role && <span class="block text-sm opacity-70">{t.role}</span>}
+          </span>
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+</Wrapper>

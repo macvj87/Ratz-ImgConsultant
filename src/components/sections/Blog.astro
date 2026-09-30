@@ -1,0 +1,22 @@
+---
+import Wrapper from './Wrapper.astro';
+import Heading from './Heading.astro';
+import PostCard from '../PostCard.astro';
+import type { Section } from '../../lib/sections';
+import type { Post } from '../../lib/store';
+interface Props { section: Section; posts: Post[] }
+const { section, posts } = Astro.props;
+const d = section.data;
+const shown = posts.slice(0, Math.max(1, d.count || 3));
+---
+<Wrapper section={section}>
+  <Heading heading={d.heading} intro={d.intro} />
+  {shown.length > 0 ? (
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" data-stagger>
+      {shown.map((p) => <PostCard post={p} />)}
+    </div>
+  ) : <p class="text-center opacity-70">New articles coming soon.</p>}
+  {d.buttonLabel && posts.length > 0 && (
+    <div class="mt-12 text-center" data-reveal><a href="/blog" class="btn-primary">{d.buttonLabel}</a></div>
+  )}
+</Wrapper>

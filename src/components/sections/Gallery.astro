@@ -1,0 +1,22 @@
+---
+import Wrapper from './Wrapper.astro';
+import Heading from './Heading.astro';
+import { img } from '../../lib/util';
+import type { Section } from '../../lib/sections';
+interface Props { section: Section }
+const { section } = Astro.props;
+const d = section.data;
+---
+<Wrapper section={section}>
+  <Heading heading={d.heading} intro={d.intro} />
+  <div class="grid grid-cols-2 gap-4 md:grid-cols-3" data-stagger>
+    {d.items.filter((g: any) => g.image).map((g: any) => (
+      <figure data-reveal="zoom">
+        <div class="zoom-img rounded-xl shadow transition-shadow duration-500 hover:shadow-2xl">
+          <img src={img(g.image, 600, 600)} alt={g.caption} loading="lazy" width="600" height="600" class="aspect-square w-full object-cover" />
+        </div>
+        {g.caption && <figcaption class="mt-2 text-center text-sm opacity-80">{g.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+</Wrapper>

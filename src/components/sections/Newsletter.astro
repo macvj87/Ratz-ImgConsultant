@@ -1,0 +1,23 @@
+---
+import Wrapper from './Wrapper.astro';
+import type { Section } from '../../lib/sections';
+interface Props { section: Section }
+const { section } = Astro.props;
+const d = section.data;
+---
+<Wrapper section={section} class="py-16">
+  <div class="blob -top-16 -left-10 h-56 w-56 bg-primary" aria-hidden="true"></div>
+  <div class="relative text-center" data-reveal="zoom">
+    {d.heading && <h2 class="section-title mb-4 text-3xl">{d.heading}</h2>}
+    {d.text && <p class="section-intro mb-8 text-lg">{d.text}</p>}
+    <form action="/api/subscribe" method="post" data-ajax class="mx-auto max-w-md">
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <label class="sr-only" for={`nl-${section.id}`}>Email address</label>
+        <input id={`nl-${section.id}`} type="email" name="email" required placeholder="Enter your email address" autocomplete="email" class="field flex-1 border-0" />
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+        <button type="submit" class="btn btn-shine bg-primary text-white hover:-translate-y-0.5 hover:bg-surface hover:text-accent hover:shadow-lg">{d.buttonLabel || 'Subscribe'}</button>
+      </div>
+      <p data-status class="mt-4 min-h-6 font-medium" data-success={d.successMessage} role="status"></p>
+    </form>
+  </div>
+</Wrapper>

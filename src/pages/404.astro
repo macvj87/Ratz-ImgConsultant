@@ -1,0 +1,13 @@
+---
+import Site from '../layouts/Site.astro';
+import { getSections, getSettings } from '../lib/store';
+const [settings, sections] = await Promise.all([getSettings(), getSections()]);
+Astro.response.status = 404;
+---
+<Site settings={settings} sections={sections} title="Page not found">
+  <section class="py-32 text-center">
+    <h1 class="section-title">Page not found</h1>
+    <p class="mb-8 opacity-80">Sorry, that page doesn’t exist.</p>
+    <a href="/" class="btn-primary">Back to home</a>
+  </section>
+</Site>

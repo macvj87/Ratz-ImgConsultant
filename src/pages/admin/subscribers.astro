@@ -1,0 +1,36 @@
+---
+import Admin from '../../layouts/Admin.astro';
+import Icon from '../../components/Icon.astro';
+import { deleteSubscriber, listSubscribers } from '../../lib/store';
+import { formatDate } from '../../lib/util';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  await deleteSubscriber(String(form.get('email')));
+  return Astro.redirect('/admin/subscribers');
+}
+const subs = await listSubscribers();
+---
+<Admin title="Newsletter subscribers">
+  <p class="mb-4 text-sm text-stone-600">
+    People who signed up with the newsletter box. Download the list to import into Mailchimp, MailerLite or similar when you send a newsletter.
+  </p>
+  <div class="mb-6 flex items-center gap-4">
+    <a href="/admin/api/subscribers.csv" class="a-btn-primary"><Icon name="arrow-down" size={16} /> Download list (CSV)</a>
+    <span class="text-sm text-stone-600">{subs.length} subscriber{subs.length === 1 ? '' : 's'}</span>
+  </div>
+  {subs.length > 0 && (
+    <ul class="a-card divide-y divide-stone-100 p-0!">
+      {subs.map((s) => (
+        <li class="flex items-center gap-3 px-4 py-2">
+          <span class="min-w-0 flex-1 truncate">{s.email}</span>
+          <span class="text-xs text-stone-500">{formatDate(s.createdAt)}</span>
+          <form method="post" data-confirm={`Remove ${s.email}?`}>
+            <input type="hidden" name="email" value={s.email} />
+            <button class="a-icon-btn hover:text-red-700" aria-label={`Remove ${s.email}`}><Icon name="trash" size={16} /></button>
+          </form>
+        </li>
+      ))}
+    </ul>
+  )}
+</Admin>

@@ -1,0 +1,12 @@
+---
+import type { Section } from '../../lib/sections';
+interface Props { section: Section; class?: string }
+const { section, class: className = 'py-20' } = Astro.props;
+const bg = {
+  light: 'bg-light', white: 'bg-white', sand: 'bg-sand', hero: 'bg-hero',
+  accent: 'bg-accent-band', secondary: 'bg-secondary-band',
+}[section.background] ?? 'bg-light';
+---
+<section id={section.anchor || undefined} class:list={[bg, "relative overflow-clip", className]}>
+  <div class="container-x"><slot /></div>
+</section>

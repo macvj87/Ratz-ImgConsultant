@@ -1,0 +1,153 @@
+@import 'tailwindcss';
+
+/* Colours and fonts come from the admin "Theme" page, injected as --site-* variables. */
+@theme inline {
+  --color-primary: var(--site-primary);
+  --color-secondary: var(--site-secondary);
+  --color-accent: var(--site-accent);
+  --color-page: var(--site-background);
+  --color-surface: var(--site-surface);
+  --color-ink: var(--site-text);
+  --font-heading: var(--site-heading-font), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--site-body-font), ui-sans-serif, system-ui, sans-serif;
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply font-body bg-page text-ink antialiased; }
+  h1, h2, h3, h4 { @apply font-heading; }
+  [id] { scroll-margin-top: 5rem; }
+}
+
+@utility btn {
+  @apply relative inline-block overflow-hidden rounded-lg px-6 py-3 text-center font-semibold transition-all duration-300;
+}
+
+@layer components {
+  .container-x { @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .btn-primary { @apply btn btn-shine bg-primary text-white shadow-lg hover:-translate-y-0.5 hover:bg-secondary hover:shadow-xl; }
+  .btn-outline { @apply btn border-2 border-primary text-primary hover:-translate-y-0.5 hover:bg-primary hover:text-white; }
+  .section-title { @apply mb-6 text-3xl font-bold text-accent sm:text-4xl; }
+  .section-intro { @apply mx-auto max-w-3xl text-xl text-ink/75; }
+  .field { @apply w-full rounded-md border border-surface bg-white px-3 py-2 text-ink transition-shadow focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40; }
+  .prose-post p { @apply mb-5 leading-relaxed; }
+  .prose-post h2 { @apply mt-10 mb-4 text-2xl font-bold text-accent; }
+  .prose-post h3 { @apply mt-8 mb-3 text-xl font-bold text-accent; }
+  .prose-post ul { @apply mb-5 list-disc pl-6; }
+  .prose-post ol { @apply mb-5 list-decimal pl-6; }
+  .prose-post a { @apply text-primary underline; }
+  .prose-post img { @apply my-6 rounded-xl; }
+  .prose-post blockquote { @apply my-6 border-l-4 border-primary pl-4 italic; }
+
+  /* Cards lift on hover; photos inside zoom gently. */
+  .card-lift { @apply transition-all duration-500 ease-out-soft hover:-translate-y-2 hover:shadow-2xl; }
+  .zoom-img { @apply overflow-hidden; }
+  .zoom-img img { @apply transition-transform duration-700 ease-out-soft; }
+  .card-lift:hover .zoom-img img, .zoom-img:hover img { @apply scale-105; }
+
+  /* Short accent bar under section headings, drawn in when revealed. */
+  .section-title::after {
+    content: '';
+    @apply mt-4 block h-1 w-16 origin-left rounded-full bg-primary;
+  }
+  .text-center .section-title::after { @apply mx-auto origin-center; }
+
+  /* Section backgrounds */
+  .bg-light { @apply bg-page; }
+  .bg-sand { @apply bg-surface; }
+  .bg-hero { @apply relative overflow-hidden bg-gradient-to-br from-page to-surface; }
+  .bg-accent-band { @apply relative overflow-hidden text-white; background: linear-gradient(115deg, var(--site-secondary), var(--site-accent), var(--site-secondary)); background-size: 200% 200%; }
+  .bg-secondary-band { @apply relative overflow-hidden bg-secondary text-white; }
+  .bg-accent-band .section-title, .bg-secondary-band .section-title { @apply text-white; }
+  .bg-accent-band .section-title::after, .bg-secondary-band .section-title::after { @apply bg-page; }
+  .bg-accent-band .section-intro, .bg-secondary-band .section-intro { @apply text-page; }
+}
+
+/* Button light sweep */
+@utility btn-shine {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 -75%;
+    width: 50%;
+    background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.35), transparent);
+    transform: skewX(-20deg);
+    pointer-events: none;
+  }
+  &:hover::before { animation: shine 0.8s ease; }
+}
+
+/* Highlighted hero line: slowly moving gradient text */
+.text-shimmer {
+  background: linear-gradient(90deg, var(--site-primary), var(--site-secondary), var(--site-primary));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Soft blurred colour blobs behind the hero and feature bands */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Reading progress bar */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 60;
+  background: linear-gradient(90deg, var(--site-primary), var(--site-accent));
+  transform-origin: 0 50%;
+  transform: scaleX(var(--progress, 0));
+}
+
+@keyframes shine { to { left: 125%; } }
+@keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(0.9) rotate(-2deg); } to { opacity: 1; transform: none; } }
+@keyframes shimmer { to { background-position: 200% center; } }
+@keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, -25px) scale(1.08); } }
+@keyframes gradient-shift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes drop-down { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes parallax { from { transform: translateY(40px); } to { transform: translateY(-40px); } }
+@keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Everything that moves is switched off for visitors who ask for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-in > * { animation: rise 0.9s var(--ease-out-soft) both; }
+  .hero-in > *:nth-child(2) { animation-delay: 0.15s; }
+  .hero-in > *:nth-child(3) { animation-delay: 0.3s; }
+  .hero-in > *:nth-child(4) { animation-delay: 0.45s; }
+  .hero-photo { animation: pop-in 1.1s 0.2s var(--ease-out-soft) both; }
+  .text-shimmer { animation: shimmer 6s linear infinite; }
+  .blob { animation: float 14s ease-in-out infinite; }
+  .blob:nth-of-type(2) { animation-duration: 18s; animation-direction: reverse; }
+  .bg-accent-band { animation: gradient-shift 14s ease infinite; }
+  #mobile-menu:not(.hidden) { animation: drop-down 0.25s ease both; }
+
+  /* Scroll reveal: only hidden when JavaScript is running, so content is never lost. */
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.9s var(--ease-out-soft), transform 0.9s var(--ease-out-soft);
+    transition-delay: calc(var(--i, 0) * 110ms);
+  }
+  .js [data-reveal='left'] { transform: translateX(-48px); }
+  .js [data-reveal='right'] { transform: translateX(48px); }
+  .js [data-reveal='zoom'] { transform: scale(0.92); }
+  .js [data-reveal].is-visible { opacity: 1; transform: none; }
+  .js [data-reveal] .section-title::after, .js .section-title[data-reveal]::after {
+    transform: scaleX(0);
+    transition: transform 0.9s 0.3s var(--ease-out-soft);
+  }
+  .js .is-visible .section-title::after, .js .section-title.is-visible::after { transform: scaleX(1); }
+
+  @supports (animation-timeline: view()) {
+    [data-parallax] { animation: parallax linear both; animation-timeline: view(); }
+  }
+}

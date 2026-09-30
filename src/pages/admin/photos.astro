@@ -1,0 +1,45 @@
+---
+import Admin from '../../layouts/Admin.astro';
+import Icon from '../../components/Icon.astro';
+import { deleteMedia, getPosts, getSections, listMedia } from '../../lib/store';
+import { img } from '../../lib/util';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  await deleteMedia(String(form.get('id')));
+  return Astro.redirect('/admin/photos');
+}
+const [media, sections, posts] = await Promise.all([listMedia(), getSections(), getPosts()]);
+const used = JSON.stringify([sections, posts]);
+---
+<Admin title="Photos" wide>
+  <div data-upload-area class="a-card mb-6">
+    <label class="a-btn-primary">
+      <Icon name="upload" size={16} /> Upload photos
+      <input type="file" accept="image/*" multiple class="sr-only" data-upload />
+    </label>
+    <p class="a-help mt-2">Large photos are shrunk automatically before uploading. You can also upload straight from any “Choose photo” button.</p>
+    <p data-upload-status class="mt-2 text-sm text-stone-700" role="status"></p>
+  </div>
+  {media.length === 0 && <p class="text-stone-600">No photos uploaded yet.</p>}
+  <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+    {media.map((m) => {
+      const inUse = used.includes(`/media/${m.id}`);
+      return (
+        <li class="a-card overflow-hidden p-0!">
+          <img src={img(`/media/${m.id}`, 300, 300)} alt="" loading="lazy" class="aspect-square w-full object-cover" />
+          <div class="flex items-center gap-2 p-2">
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-xs" title={m.name}>{m.name}</span>
+              <span class:list={['text-xs', inUse ? 'text-emerald-700' : 'text-stone-400']}>{inUse ? 'In use' : 'Not used'}</span>
+            </span>
+            <form method="post" data-confirm={inUse ? 'This photo is used on the website. Deleting it will leave an empty space there. Delete anyway?' : 'Delete this photo?'}>
+              <input type="hidden" name="id" value={m.id} />
+              <button class="a-icon-btn hover:text-red-700" aria-label={`Delete ${m.name}`}><Icon name="trash" size={16} /></button>
+            </form>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+</Admin>
