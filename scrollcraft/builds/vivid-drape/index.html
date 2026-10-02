@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Colour Analysis &amp; Personal Stylist Sydney | Vivid by Rathi</title>
+<meta name="description" content="Personal colour analysis, style consultations and personal shopping with a certified image consultant. In person in Sydney, online Australia-wide. Book a free chat.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_AU">
+<meta property="og:site_name" content="Vivid by Rathi">
+<meta property="og:title" content="Colour Analysis &amp; Personal Stylist Sydney | Vivid by Rathi">
+<meta property="og:description" content="Find the colours and clothes that look like you, with Sydney personal stylist Rathi. In person in Sydney or online Australia-wide. Start with a free 20-minute Style Discovery.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Vivid by Rathi",
+  "description": "Personal stylist and certified image consultant in Sydney offering personal colour analysis, style consultations, wardrobe edits, personal shopping and group workshops, in person in Sydney and online Australia-wide.",
+  "email": "hello@vividbyrathi.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Sydney", "addressRegion": "NSW", "addressCountry": "AU" },
+  "areaServed": [{ "@type": "City", "name": "Sydney" }, { "@type": "Country", "name": "Australia" }],
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "09:00", "closes": "18:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "16:00" }
+  ],
+  "knowsAbout": ["Personal styling", "Personal colour analysis", "Seasonal colour analysis", "Online colour analysis", "Wardrobe styling", "Body shape analysis", "Personal shopping", "Image consulting"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Personal styling services",
+    "itemListElement": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Personal colour analysis" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Personal style consultation" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Wardrobe edit and organisation" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Personal shopping" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Online colour analysis and style consultation" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Group and corporate style workshops" } }
+    ]
+  }
+}
+</script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231E2419'/><text x='16' y='23' font-family='Georgia,serif' font-size='19' font-weight='700' fill='%23F3F1EC' text-anchor='middle'>V</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Geist:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="scrollcraft.css">
+<style>
+  /* ------------------------------------------------------------------ tokens */
+  :root {
+    --sc-canvas:     #F3F1EC;   /* paper */
+    --sc-surface:    #E8E6DF;   /* second paper */
+    --sc-ink:        #1C2018;   /* olive-black */
+    --sc-ink-soft:   #545B4B;
+    --sc-accent:     #4E6133;   /* brand olive until the visitor chooses a season */
+    --sc-accent-ink: #F3F1EC;
+    --sc-font-display: "Bodoni Moda", "Didot", Georgia, serif;
+    --sc-font-text:    "Geist", system-ui, sans-serif;
+
+    --stage: #111310;            /* the drape room */
+    --stage-ink: #F7F4EE;
+    --stage-ink-soft: #D2CEC5;
+
+    /* Season regrade. Defaults are the brand's own olive. */
+    --s-accent: #4E6133;         /* text-safe on paper */
+    --s-fill:   #778D4E;         /* the colour itself */
+    --s-tint:   #E6E9DD;         /* testimonial ground */
+    --s-deep:   #1E2419;         /* closing plate */
+    --folio-w: 4.75rem;
+  }
+  html[data-season="winter"] { --s-accent: #1D3C8F; --s-fill: #1D3C8F; --s-tint: #E4E9F4; --s-deep: #0E1A3A; }
+  html[data-season="summer"] { --s-accent: #7A4560; --s-fill: #B57E95; --s-tint: #F1E5EB; --s-deep: #362B41; }
+  html[data-season="autumn"] { --s-accent: #8B421F; --s-fill: #A3502A; --s-tint: #F2E5DA; --s-deep: #2E2914; }
+  html[data-season="spring"] { --s-accent: #A13F29; --s-fill: #EE7A5E; --s-tint: #FBE7DE; --s-deep: #17423D; }
+  html[data-season="grey"]   { --s-accent: #4F5457; --s-fill: #8A8D8F; --s-tint: #E7E8E8; --s-deep: #24272A; }
+
+  /* ------------------------------------------------------------------ base */
+  body { background: var(--sc-canvas); color: var(--sc-ink); }
+  a { color: var(--s-accent); transition: color 500ms var(--sc-ease-out); }
+  ::selection { background: var(--s-fill); color: #fff; }
+  .page { padding-left: var(--folio-w); }
+  .chapter { position: relative; }
+  .ch-label {
+    font-family: var(--sc-font-text); font-size: var(--sc-t-xs); font-weight: 600;
+    letter-spacing: var(--sc-track-wide); text-transform: uppercase; color: var(--s-accent);
+  }
+  .h-display {
+    font-family: var(--sc-font-display); font-weight: 500; line-height: 1.02;
+    letter-spacing: -0.02em; text-wrap: balance; font-optical-sizing: auto;
+  }
+  .h-display em { font-style: italic; font-weight: 400; }
+  .h1-kicker { display: block; line-height: 1.4; margin-bottom: var(--sc-4); }
+  .body { font-size: var(--sc-t-base); line-height: var(--sc-leading-body); color: var(--sc-ink-soft); max-width: 58ch; text-wrap: pretty; }
+  .credit { font-size: var(--sc-t-xs); color: var(--sc-ink-soft); margin-top: var(--sc-2); }
+
+  /* Bodoni's hairlines thin out as its optical size rises, and light-on-dark type loses them
+     first. Every display-face element uses a fixed, sturdier optical size; dark and tinted
+     grounds step it down further and add weight so the thin strokes survive. */
+  :root { --opsz: 26; --dw: 0; }
+  .h-display, .masthead__name, .questions li, .inter__num, .inter__title, .readout__name, .ledger h3,
+  .quote blockquote, .rail__end, .colophon__line, .folio__mark, .folio__num, .contents a span:first-child, .swatch__tag i {
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" var(--opsz);
+  }
+  .drape-act, .colophon, .folio.is-dark { --opsz: 11; }
+  .words { --opsz: 16; }
+  .drape-copy h2 { font-weight: 600; letter-spacing: -0.012em; }
+  .readout__name { font-weight: 600; }
+  .colophon__line { font-weight: 500; letter-spacing: -0.005em; }
+  .quote blockquote { font-weight: 500; }
+
+  /* ------------------------------------------------------------------ folio */
+  .folio {
+    position: fixed; inset: 0 auto 0 0; width: var(--folio-w); z-index: var(--sc-z-chrome);
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    padding-block: var(--sc-6); border-right: 1px solid var(--sc-hairline);
+    background: color-mix(in oklab, var(--sc-canvas) 92%, transparent);
+    color: var(--sc-ink); transition: background-color 400ms var(--sc-ease-out), color 400ms var(--sc-ease-out), border-color 400ms;
+  }
+  .folio.is-dark { background: var(--stage); color: var(--stage-ink); border-color: rgb(255 255 255 / .1); }
+  .folio__mark { writing-mode: vertical-rl; rotate: 180deg; font-family: var(--sc-font-display); font-size: 1.05rem; font-weight: 600; text-decoration: none; color: inherit; letter-spacing: 0.01em; }
+  .folio__now { writing-mode: vertical-rl; rotate: 180deg; display: flex; align-items: center; gap: var(--sc-3); font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide); text-transform: uppercase; }
+  .folio__num { font-family: var(--sc-font-display); font-size: 1.25rem; letter-spacing: 0; text-transform: none; font-style: italic; }
+  .folio__swatch { width: 10px; height: 10px; border-radius: 2px; background: var(--s-fill); transition: background-color 500ms var(--sc-ease-out); }
+  .folio__btn {
+    writing-mode: vertical-rl; rotate: 180deg; font: inherit; font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase; color: inherit; background: none; border: 1px solid currentColor; border-radius: var(--sc-r-pill);
+    padding: var(--sc-3) var(--sc-1); cursor: pointer; opacity: .8; transition: opacity 150ms var(--sc-ease-out);
+  }
+  .folio__btn:hover { opacity: 1; }
+  .folio__btn:active { scale: .97; }
+
+  .contents { border: 0; padding: 0; background: transparent; max-width: none; max-height: none; width: 100%; height: 100%; }
+  .contents::backdrop { background: rgb(14 16 12 / .45); }
+  .contents__panel {
+    position: absolute; inset: 0 auto 0 0; width: min(26rem, 88vw); background: var(--sc-canvas); color: var(--sc-ink);
+    padding: var(--sc-8) var(--sc-7); display: flex; flex-direction: column; gap: var(--sc-6); box-shadow: var(--sc-e3);
+  }
+  .contents[open] .contents__panel { animation: drawer 320ms var(--sc-ease-drawer); }
+  @keyframes drawer { from { transform: translateX(-24px); opacity: 0; } }
+  .contents ol { list-style: none; margin: 0; padding: 0; }
+  .contents li + li { border-top: 1px solid var(--sc-hairline); }
+  .contents a { display: flex; gap: var(--sc-4); align-items: baseline; padding: var(--sc-4) 0; text-decoration: none; color: var(--sc-ink); }
+  .contents a:hover { color: var(--s-accent); }
+  .contents a span:first-child { font-family: var(--sc-font-display); font-style: italic; width: 2rem; color: var(--s-accent); }
+  .contents a span:last-child { font-size: var(--sc-t-lg); }
+  .contents__close { align-self: flex-start; font: inherit; font-size: var(--sc-t-sm); background: none; border: 0; color: var(--sc-ink-soft); cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 4px; }
+
+  /* ------------------------------------------------------------------ 1 · title page */
+  .title { min-height: 108vh; overflow: hidden; background: var(--sc-canvas); }
+  .title__inner { position: relative; z-index: 4; min-height: 100vh; display: grid; grid-template-rows: auto 1fr; padding: var(--sc-7) var(--sc-gutter) var(--sc-9); }
+  .masthead { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sc-5); border-bottom: 1px solid var(--sc-hairline-strong); padding-bottom: var(--sc-4); }
+  .masthead__name { font-family: var(--sc-font-display); font-size: var(--sc-t-xl); font-weight: 600; letter-spacing: -0.01em; }
+  .masthead__meta { font-size: var(--sc-t-sm); color: var(--sc-ink-soft); }
+  .title__copy { align-self: end; max-width: min(40rem, 52vw); }
+  .title h1 { font-size: clamp(3rem, 1.6rem + 4.6vw, 6.4rem); margin: 0 0 var(--sc-6); }
+  .title .body { font-size: var(--sc-t-lg); max-width: 34ch; color: var(--sc-ink-soft); }
+  .runlink { display: inline-flex; gap: .5em; align-items: baseline; margin-top: var(--sc-6); font-size: var(--sc-t-lg); font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+  .runlink:hover { text-decoration-thickness: 2px; }
+
+  .planes { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  .plane { position: absolute; inset: 0; }
+  .plane__inner { position: absolute; inset: 0; transition: transform 600ms var(--sc-ease-out); }
+  .plane--far { z-index: 1; filter: blur(1.4px); opacity: .62; }
+  .plane--mid { z-index: 2; }
+  .plane--near { z-index: 6; }
+
+  /* A swatch: woven cloth with a pinked bottom edge, on a paper tag. */
+  .swatch {
+    position: absolute; left: var(--x); top: var(--y); width: var(--w, clamp(7.5rem, 10vw, 10.5rem));
+    rotate: var(--r, 0deg); scale: var(--s, 1);
+    background: #FBFAF7; padding: 6px 6px 0; border-radius: 3px;
+    box-shadow: 0 1px 1px rgb(30 34 24 / .08), 0 10px 22px -6px rgb(30 34 24 / .22), 0 28px 48px -18px rgb(30 34 24 / .22);
+  }
+  .swatch__cloth {
+    display: block; aspect-ratio: 4 / 5; background-color: var(--c);
+    background-image:
+      linear-gradient(160deg, rgb(255 255 255 / .16), transparent 42%, rgb(0 0 0 / .14)),
+      repeating-linear-gradient(0deg, rgb(255 255 255 / .07) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgb(0 0 0 / .07) 0 1px, transparent 1px 3px);
+    -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 10px 100%;
+            mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 10px 100%;
+  }
+  .swatch__tag { display: flex; justify-content: space-between; gap: 6px; padding: 7px 2px 8px; font-size: 10.5px; line-height: 1.2; color: #3A3F34; }
+  .swatch__tag i { font-family: var(--sc-font-display); color: #6B6F63; }
+
+  .title__fade { position: absolute; inset: auto 0 0; height: 18vh; z-index: 5; background: linear-gradient(transparent, var(--sc-canvas)); pointer-events: none; }
+
+  /* ------------------------------------------------------------------ 2 · nothing to wear */
+  .wardrobe { background: var(--sc-canvas); padding: var(--sc-section) var(--sc-gutter); }
+  .wardrobe__grid { max-width: var(--sc-maxw); margin-inline: auto; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2rem, 6vw, 7rem); align-items: center; }
+  .wardrobe figure { margin: 0; }
+  .wardrobe img { width: 100%; height: auto; display: block; border-radius: 2px; }
+  .wardrobe h2 { font-size: var(--sc-t-3xl); margin: var(--sc-4) 0 var(--sc-6); }
+  .questions { list-style: none; margin: var(--sc-6) 0; padding: 0; border-top: 1px solid var(--sc-hairline-strong); }
+  .questions li { padding: var(--sc-4) 0; border-bottom: 1px solid var(--sc-hairline-strong); font-family: var(--sc-font-display); font-size: var(--sc-t-xl); font-weight: 500; line-height: 1.2; --opsz: 11; }
+  .wardrobe .body { color: #3E4437; }
+  .wardrobe .turn { color: var(--sc-ink); font-size: var(--sc-t-lg); font-weight: 500; }
+
+  /* ------------------------------------------------------------------ 3 · intertitle */
+  .inter { min-height: 82vh; background: var(--sc-surface); display: flex; align-items: flex-end; padding: var(--sc-9) var(--sc-gutter); }
+  .inter__num { font-family: var(--sc-font-display); font-style: italic; font-weight: 400; font-size: clamp(7rem, 3rem + 14vw, 16rem); line-height: 1; padding: .06em .04em .12em; color: var(--sc-ink); margin: 0; }
+  .inter__title { font-family: var(--sc-font-display); font-size: var(--sc-t-3xl); margin: 0; }
+  .inter__hint { margin-top: var(--sc-4); color: var(--sc-ink-soft); font-size: var(--sc-t-lg); }
+
+  /* ------------------------------------------------------------------ 4 · the drape */
+  .drape-act { background: var(--stage); color: var(--stage-ink); }
+  .drape-stage { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(2rem, 5vw, 6rem); padding: 0 var(--sc-gutter); background: var(--stage); }
+  .drape-copy { max-width: 30rem; }
+  .drape-copy h2 { font-size: var(--sc-t-2xl); margin: var(--sc-3) 0 var(--sc-7); color: var(--stage-ink); }
+  .drape-copy .ch-label { color: var(--stage-ink-soft); }
+  .readout { min-height: 12.5rem; transition: opacity 200ms var(--sc-ease-out); }
+  .readout.is-swapping { opacity: 0; }
+  .readout__name { font-family: var(--sc-font-display); font-style: italic; font-size: var(--sc-t-3xl); line-height: 1.1; margin: 0 0 var(--sc-5); }
+  .readout__desc { color: var(--stage-ink); opacity: .9; font-size: var(--sc-t-lg); line-height: 1.55; max-width: 34ch; margin: 0; }
+  .chips { display: flex; gap: 8px; margin-top: var(--sc-5); }
+  .chips span { width: 34px; height: 34px; border-radius: 3px; background: var(--c); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .12); }
+  .picker { margin-top: var(--sc-7); border-top: 1px solid rgb(255 255 255 / .14); padding-top: var(--sc-5); }
+  .picker p { margin: 0 0 var(--sc-3); font-size: var(--sc-t-base); color: var(--stage-ink-soft); }
+  .picker__row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .picker button {
+    display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: var(--sc-t-sm); color: var(--stage-ink);
+    background: rgb(255 255 255 / .05); border: 1px solid rgb(255 255 255 / .2); border-radius: var(--sc-r-pill);
+    padding: 9px 14px 9px 10px; cursor: pointer; transition: background-color 150ms var(--sc-ease-out), border-color 150ms;
+  }
+  .picker button::before { content: ""; width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+  .picker button:hover { background: rgb(255 255 255 / .12); }
+  .picker button:active { scale: .97; }
+  .picker button[aria-pressed="true"] { background: var(--stage-ink); color: var(--stage); border-color: var(--stage-ink); }
+
+  .portrait { position: relative; margin: 0; height: min(88vh, 62rem); aspect-ratio: 2 / 3; overflow: hidden; border-radius: 2px; background: #0c0d0b; }
+  .portrait > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .drape { position: absolute; inset: 0; width: 100%; height: 100%; transform-origin: 50% 100%;
+    transform: translateY(calc((1 - var(--k, 0)) * 44%)) rotate(calc((1 - var(--k, 0)) * -2.5deg)); }
+  .drape--base { transform: none; }
+  .reflect {
+    position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light; opacity: .55;
+    background-color: var(--reflect, transparent); transition: background-color 450ms var(--sc-ease-out);
+    -webkit-mask: radial-gradient(ellipse 26% 20% at 56% 49%, #000 0%, rgb(0 0 0 / .55) 45%, transparent 100%);
+            mask: radial-gradient(ellipse 26% 20% at 56% 49%, #000 0%, rgb(0 0 0 / .55) 45%, transparent 100%);
+  }
+  .portrait__cap { position: absolute; left: 0; bottom: 0; right: 0; padding: 48px 14px 12px; font-size: 12px; line-height: 1.45; color: rgb(255 255 255 / .9); text-shadow: 0 1px 2px rgb(0 0 0 / .7); background: linear-gradient(to top, rgb(0 0 0 / .72), transparent); }
+
+  /* ------------------------------------------------------------------ 5 · method */
+  .method { background: var(--sc-surface); padding: var(--sc-section) var(--sc-gutter); }
+  .method__grid { max-width: var(--sc-maxw); margin-inline: auto; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 7rem); }
+  .method__media { position: relative; align-self: start; position: sticky; top: var(--sc-8); }
+  .method__media .frame { position: relative; overflow: hidden; border-radius: 2px; height: calc(100svh - 2 * var(--sc-8) - 2.25rem); min-height: 22rem; background: var(--sc-ink); }
+  /* One photo per service, stacked. The one for the row being read fades up as it settles. */
+  .method__stack { position: absolute; inset: -14% 0; }
+  .method__stack img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+    opacity: 0; scale: 1.06; transition: opacity 900ms var(--sc-ease-out), scale 1400ms var(--sc-ease-out);
+  }
+  .method__stack img.is-active { opacity: 1; scale: 1; z-index: 1; }
+  .method__now { display: flex; gap: var(--sc-3); align-items: baseline; }
+  .method__now b { font-family: var(--sc-font-display); font-style: italic; font-weight: 500; font-size: var(--sc-t-base); color: var(--s-accent); transition: color 500ms; }
+  .ledger h3 { transition: color 500ms var(--sc-ease-out); --opsz: 11; }
+  .ledger li.is-active h3 { color: var(--s-accent); }
+  .method h2 { font-size: var(--sc-t-3xl); margin: var(--sc-4) 0 var(--sc-7); }
+  .ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--sc-ink); }
+  .ledger li { display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: var(--sc-3) var(--sc-7); padding: var(--sc-6) 0; border-bottom: 1px solid var(--sc-hairline-strong); }
+  .ledger h3 { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-xl); line-height: 1.12; margin: 0; }
+  .ledger p { margin: 0; color: var(--sc-ink-soft); line-height: 1.55; }
+  .ledger .incl { margin-top: var(--sc-2); font-size: var(--sc-t-sm); color: var(--sc-ink); }
+  .ledger .incl b { font-weight: 600; color: var(--s-accent); transition: color 500ms; }
+
+  /* ------------------------------------------------------------------ 6 · words */
+  .words { background: var(--s-tint); transition: background-color 700ms var(--sc-ease-out); }
+  .words [data-sc-stage] { display: flex; align-items: center; background: var(--s-tint); transition: background-color 700ms var(--sc-ease-out); }
+  .rail { gap: clamp(2.5rem, 6vw, 6rem); padding: 0 var(--sc-gutter); align-items: center; }
+  .rail > * { flex: 0 0 auto; }
+  .rail__lead { width: clamp(17rem, 30vw, 26rem); }
+  .rail__lead h2 { font-size: var(--sc-t-3xl); margin: var(--sc-4) 0 0; }
+  .quote { width: clamp(17rem, 32vw, 28rem); margin: 0; }
+  .quote blockquote { margin: 0; font-family: var(--sc-font-display); font-style: italic; font-size: clamp(1.25rem, 1rem + .8vw, 1.7rem); line-height: 1.35; color: var(--sc-ink); text-wrap: pretty; }
+  .quote blockquote::before { content: ""; display: block; width: 2.25rem; height: 2px; margin-bottom: var(--sc-5); background: var(--s-accent); transition: background-color 500ms; }
+  .quote figcaption { margin-top: var(--sc-5); font-size: var(--sc-t-sm); color: var(--sc-ink-soft); }
+  .quote figcaption b { color: var(--sc-ink); font-weight: 600; }
+  .rail__end { width: clamp(14rem, 22vw, 20rem); font-family: var(--sc-font-display); font-size: var(--sc-t-2xl); line-height: 1.1; }
+
+  /* ------------------------------------------------------------------ 7 · Rathi */
+  .rathi { background: var(--sc-canvas); padding: var(--sc-section) var(--sc-gutter); }
+  .rathi__grid { max-width: var(--sc-maxw); margin-inline: auto; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(2rem, 6vw, 7rem); align-items: end; }
+  .rathi h2 { font-size: var(--sc-t-3xl); margin: var(--sc-4) 0 var(--sc-6); }
+  .rathi .body + .body { margin-top: var(--sc-4); }
+  .rathi figure { margin: 0; }
+  .rathi img { display: block; width: 100%; height: auto; border-radius: 2px; filter: saturate(.9); }
+
+  /* ------------------------------------------------------------------ 8 · colophon */
+  .colophon { background: var(--s-deep); color: #F3F1EC; padding: var(--sc-10) var(--sc-gutter) var(--sc-7); transition: background-color 700ms var(--sc-ease-out); min-height: 92vh; display: flex; flex-direction: column; justify-content: space-between; }
+  .colophon a { color: #F3F1EC; }
+  .colophon__lead { max-width: var(--sc-maxw); width: 100%; margin-inline: auto; }
+  .yours { display: flex; align-items: center; gap: var(--sc-4); font-size: var(--sc-t-sm); letter-spacing: var(--sc-track-wide); text-transform: uppercase; color: rgb(243 241 236 / .78); }
+  .yours .chips { margin: 0; }
+  .yours .chips span { width: 18px; height: 18px; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .25); }
+  .colophon__line { font-family: var(--sc-font-display); font-weight: 400; font-size: clamp(1.8rem, 1.2rem + 2.2vw, 3.2rem); line-height: 1.18; max-width: 26ch; margin: var(--sc-6) 0 0; text-wrap: balance; }
+  .colophon__line a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .colophon__line a:hover { text-decoration-thickness: 2px; }
+  .colophon__plate { max-width: var(--sc-maxw); width: 100%; margin: var(--sc-10) auto 0; border-top: 1px solid rgb(243 241 236 / .25); padding-top: var(--sc-5);
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sc-5); font-size: var(--sc-t-xs); line-height: 1.6; color: rgb(243 241 236 / .74); }
+  .colophon__plate b { display: block; color: #F3F1EC; font-weight: 600; margin-bottom: 2px; }
+
+  /* ------------------------------------------------------------------ focus */
+  :focus-visible { outline: 2px solid var(--s-accent); outline-offset: 3px; border-radius: 2px; }
+  .drape-act :focus-visible, .colophon :focus-visible, .folio.is-dark :focus-visible { outline-color: #F3F1EC; }
+
+  /* ------------------------------------------------------------------ phones */
+  @media (max-width: 860px) {
+    :root { --folio-w: 0px; }
+    .folio { inset: auto 12px 12px auto; width: auto; height: auto; flex-direction: row; gap: var(--sc-3); padding: 6px 6px 6px 14px; border: 1px solid var(--sc-hairline-strong); border-radius: var(--sc-r-pill); box-shadow: var(--sc-e2); }
+    .folio__mark { display: none; }
+    .folio__now, .folio__btn { writing-mode: horizontal-tb; rotate: none; }
+    .folio__now { gap: 8px; }
+    .folio__btn { padding: 8px 14px; min-height: 36px; }
+    .folio__now #folio-title { display: none; }
+    .title { min-height: 100svh; }
+    .title__inner { min-height: 100svh; padding-bottom: var(--sc-8); }
+    .masthead__meta { display: none; }
+    .title__copy { max-width: none; }
+    .title h1 { font-size: clamp(2.5rem, 1.4rem + 6vw, 3.4rem); }
+    .plane--far { display: none; }
+    .swatch { --w: clamp(4.6rem, 20vw, 6rem); }
+    .title__inner { grid-template-rows: auto minmax(15rem, 1fr) auto; }
+    .title__copy { grid-row: 3; }
+    /* Phone art direction: every swatch sits in the band between masthead and headline. */
+    .plane--mid .swatch:nth-child(1) { --x: 5% !important;  --y: 12% !important; }
+    .plane--mid .swatch:nth-child(2) { --x: 60% !important; --y: 13% !important; }
+    .plane--mid .swatch:nth-child(3) { --x: 33% !important; --y: 18% !important; }
+    .plane--near .swatch:nth-child(1) { --x: 70% !important; --y: 27% !important; --s: 1 !important; }
+    .plane--near .swatch:nth-child(2) { --x: 17% !important; --y: 29% !important; --s: .95 !important; }
+    /* The mid plane would sink onto the headline as the page scrolls; on phones it holds. */
+    .plane--mid { transform: none !important; }
+    .wardrobe__grid, .method__grid, .rathi__grid { grid-template-columns: 1fr; }
+    .wardrobe figure { max-width: 22rem; }
+    /* Phone: the photo holds at the top while the services scroll beneath it. */
+    .method__media { top: 0; z-index: 2; margin-inline: calc(-1 * var(--sc-gutter)); padding: var(--sc-3) var(--sc-gutter) var(--sc-2); background: var(--sc-surface); }
+    .method__media .frame { height: auto; min-height: 0; aspect-ratio: 16 / 9; }
+    .ledger li { grid-template-columns: 1fr; }
+    .drape-stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; align-content: start; gap: var(--sc-4); padding: var(--sc-4) var(--sc-gutter) 0; }
+    .portrait { order: -1; height: 50svh; justify-self: center; }
+    .drape-copy h2, .drape-copy .ch-label { display: none; }
+    .readout { min-height: 8.6rem; }
+    .readout__name { font-size: var(--sc-t-2xl); margin-bottom: var(--sc-2); }
+    .readout__desc { font-size: var(--sc-t-sm); }
+    .chips { margin-top: var(--sc-3); }
+    .chips span { width: 26px; height: 26px; }
+    .picker { margin-top: var(--sc-4); padding-top: var(--sc-3); }
+    .picker__row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+    .picker button { justify-content: center; gap: 6px; padding: 11px 4px; font-size: 13px; min-height: 44px; }
+    .picker button::before { width: 11px; height: 11px; }
+    .drape-stage { padding-bottom: 4.5rem; }
+    .rathi figure { max-width: 20rem; }
+    .colophon__plate { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 860px) {
+    .cap-more { display: none; }
+    .title__inner { padding-bottom: 5.5rem; }
+  }
+  @media (max-width: 860px) and (max-height: 700px) {
+    .title__inner { grid-template-rows: auto minmax(11rem, 1fr) auto; padding-top: var(--sc-5); }
+    .title h1 { font-size: 2.3rem; margin-bottom: var(--sc-4); }
+    .title .body { font-size: var(--sc-t-base); }
+    .runlink { margin-top: var(--sc-4); }
+    .swatch { --w: 4.4rem; }
+  }
+  @media (max-width: 380px) {
+    .portrait { height: 44svh; }
+  }
+
+  /* ------------------------------------------------------------------ motion off */
+  @media (prefers-reduced-motion: reduce) {
+    .method__stack img { transition: none; scale: 1; }
+    .plane__inner, .readout, .drape { transition: none !important; }
+    .drape { transform: none; opacity: var(--k, 0); }
+    .method__media img { scale: 1; }
+    /* Without motion the rail is a plain grid of quotes, not a held screen. */
+    .words { height: auto !important; }
+    .words [data-sc-stage] { position: relative !important; height: auto !important; overflow: visible !important; padding-block: var(--sc-section); }
+    .words .rail { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); transform: none !important; }
+    .words .rail > * { width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<span data-sc-progress></span>
+<div class="sc-grain" aria-hidden="true"></div>
+
+<nav class="folio" id="folio" aria-label="Folio">
+  <a class="folio__mark" href="#top">Vivid by Rathi</a>
+  <span class="folio__now" aria-live="polite"><span class="folio__swatch" aria-hidden="true"></span><span class="folio__num" id="folio-num"></span><span id="folio-title">Title page</span></span>
+  <button class="folio__btn" type="button" id="contents-open" aria-haspopup="dialog">Contents</button>
+</nav>
+
+<dialog class="contents" id="contents" aria-label="Contents">
+  <div class="contents__panel">
+    <p class="ch-label">Contents</p>
+    <ol>
+      <li><a href="#ch-1"><span>I</span><span>Nothing to wear</span></a></li>
+      <li><a href="#ch-2"><span>II</span><span>The drape</span></a></li>
+      <li><a href="#ch-3"><span>III</span><span>The method</span></a></li>
+      <li><a href="#ch-4"><span>IV</span><span>In their words</span></a></li>
+      <li><a href="#ch-5"><span>V</span><span>Rathi</span></a></li>
+      <li><a href="#colophon"><span>·</span><span>Book a free Style Discovery</span></a></li>
+    </ol>
+    <button class="contents__close" type="button" id="contents-close">Close</button>
+  </div>
+</dialog>
+
+<main class="page" id="top">
+
+  <!-- 1 · TITLE PAGE: type on paper, swatches hanging at three depths -->
+  <section class="chapter title" data-sc-act="flow" data-chapter="" data-chapter-title="Title page">
+    <div class="planes" aria-hidden="true">
+      <div class="plane plane--far" data-sc-parallax="1.3"><div class="plane__inner" data-depth="6">
+        <div class="swatch" style="--x:61%;--y:9%;--c:#0E1A3A;--r:-4deg;--s:.62"><span class="swatch__cloth"></span><span class="swatch__tag">Navy <i>Winter</i></span></div>
+        <div class="swatch" style="--x:90%;--y:31%;--c:#9A86B8;--r:6deg;--s:.6"><span class="swatch__cloth"></span><span class="swatch__tag">Lavender <i>Summer</i></span></div>
+        <div class="swatch" style="--x:71%;--y:71%;--c:#6B6A2A;--r:3deg;--s:.58"><span class="swatch__cloth"></span><span class="swatch__tag">Olive <i>Autumn</i></span></div>
+        <div class="swatch" style="--x:96%;--y:80%;--c:#F0C24B;--r:-7deg;--s:.6"><span class="swatch__cloth"></span><span class="swatch__tag">Sunflower <i>Spring</i></span></div>
+      </div></div>
+      <div class="plane plane--mid" data-sc-parallax="0.55"><div class="plane__inner" data-depth="13">
+        <div class="swatch" style="--x:68%;--y:24%;--c:#B57E95;--r:-6deg"><span class="swatch__cloth"></span><span class="swatch__tag">Rose <i>Summer</i></span></div>
+        <div class="swatch" style="--x:85%;--y:53%;--c:#C99430;--r:5deg"><span class="swatch__cloth"></span><span class="swatch__tag">Mustard <i>Autumn</i></span></div>
+        <div class="swatch" style="--x:59%;--y:47%;--c:#0F7B6C;--r:-2deg;--s:.9"><span class="swatch__cloth"></span><span class="swatch__tag">Emerald <i>Winter</i></span></div>
+      </div></div>
+      <div class="plane plane--near" data-sc-parallax="-1.1"><div class="plane__inner" data-depth="24">
+        <div class="swatch" style="--x:67%;--y:69%;--c:#EE7A5E;--r:8deg;--s:1.12"><span class="swatch__cloth"></span><span class="swatch__tag">Coral <i>Spring</i></span></div>
+        <div class="swatch" style="--x:83%;--y:16%;--c:#A3502A;--r:-9deg;--s:1.08"><span class="swatch__cloth"></span><span class="swatch__tag">Rust <i>Autumn</i></span></div>
+      </div></div>
+    </div>
+
+    <div class="title__inner">
+      <header class="masthead">
+        <span class="masthead__name">Vivid by Rathi</span>
+        <span class="masthead__meta">Image consultant · Sydney &amp; Australia-wide</span>
+      </header>
+      <div class="title__copy">
+        <h1 class="h-display"><span class="ch-label h1-kicker">Personal colour analysis &amp; styling, Sydney</span>Find the colours that <em>look like you.</em></h1>
+        <p class="body">Personal colour analysis and style advice with a certified image consultant, in person in Sydney or online anywhere in Australia. It starts with a free 20-minute Style Discovery.</p>
+        <a class="runlink" href="#colophon">Book a free Style Discovery <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <div class="title__fade" aria-hidden="true"></div>
+  </section>
+
+  <!-- 2 · I · NOTHING TO WEAR -->
+  <section class="chapter wardrobe" id="ch-1" data-sc-act="flow" data-chapter="I" data-chapter-title="Nothing to wear">
+    <div class="wardrobe__grid">
+      <figure data-sc-in>
+        <img src="assets/wardrobe.webp" width="1600" height="2400" loading="lazy" alt="A clothes rail in a dim room, a few shirts on hangers and more lying on the floor.">
+        <figcaption class="credit">Photo: Anne Nygård, Unsplash</figcaption>
+      </figure>
+      <div class="sc-stack" data-sc-in data-sc-stagger="70">
+        <p class="ch-label">I · Nothing to wear</p>
+        <h2 class="h-display">A full wardrobe, and still nothing to wear.</h2>
+        <p class="body">How you see yourself shapes how you show up. If getting dressed feels like guesswork, you are not alone. Do you…</p>
+        <ul class="questions">
+          <li>Struggle to put outfits together?</li>
+          <li>Feel unsure which colours suit your skin tone?</li>
+          <li>Wonder which styles flatter your body shape?</li>
+          <li>Come home from shopping frustrated?</li>
+        </ul>
+        <p class="body turn">Usually it isn’t the clothes. It’s the colours, and nobody has shown you which ones are yours.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · INTERTITLE (authored silence before the peak) -->
+  <section class="chapter inter" data-sc-act="flow" data-chapter="II" data-chapter-title="The drape">
+    <div>
+      <div data-sc-reveal="up" data-sc-reveal-at="0.22 0.52"><p class="inter__num" aria-hidden="true">II</p></div>
+      <p class="inter__title">The drape</p>
+      <p class="inter__hint">Watch her face, not the fabric.</p>
+    </div>
+  </section>
+
+  <!-- 4 · II · THE DRAPE (peak): scroll lays fabric under a face -->
+  <section class="chapter drape-act" id="ch-2" data-sc-act="pin" data-sc-span="4.4" data-chapter="II" data-chapter-title="The drape" data-ground="dark">
+    <div class="drape-stage" data-sc-stage>
+      <div class="drape-copy">
+        <p class="ch-label">II · The drape</p>
+        <h2 class="h-display">Hold a colour under a face, and the face changes.</h2>
+        <div class="readout" id="readout" aria-live="polite">
+          <p class="readout__name" id="readout-name">The grey cape</p>
+          <p class="readout__desc" id="readout-desc">Every session starts in neutral grey, so nothing you’re wearing gets in the way.</p>
+          <div class="chips" id="readout-chips" aria-hidden="true"></div>
+        </div>
+        <div class="picker">
+          <p id="picker-label">Which one did you keep looking at?</p>
+          <div class="picker__row" role="group" aria-labelledby="picker-label">
+            <button type="button" data-pick="winter" aria-pressed="false" style="--c:#1D3C8F">Winter</button>
+            <button type="button" data-pick="summer" aria-pressed="false" style="--c:#B57E95">Summer</button>
+            <button type="button" data-pick="autumn" aria-pressed="false" style="--c:#A3502A">Autumn</button>
+            <button type="button" data-pick="spring" aria-pressed="false" style="--c:#EE7A5E">Spring</button>
+          </div>
+        </div>
+      </div>
+
+      <figure class="portrait" id="portrait">
+        <img src="assets/drape-portrait.webp" width="1200" height="1800" alt="Portrait of a woman with long dark hair against a dark backdrop, with a fabric drape laid across her shoulders.">
+        <!-- Drapes, bottom to top. The grey cape is already in place; each season slides up over it. -->
+        <svg class="drape drape--base" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true"><use href="#drape-shape" style="--fill:#6E7174"/></svg>
+        <svg class="drape" data-season="winter" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true"><use href="#drape-shape" style="--fill:#1D3C8F"/></svg>
+        <svg class="drape" data-season="summer" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true"><use href="#drape-shape" style="--fill:#B57E95"/></svg>
+        <svg class="drape" data-season="autumn" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true"><use href="#drape-shape" style="--fill:#A3502A"/></svg>
+        <svg class="drape" data-season="spring" viewBox="0 0 100 150" preserveAspectRatio="none" aria-hidden="true"><use href="#drape-shape" style="--fill:#EE7A5E"/></svg>
+        <div class="reflect" id="reflect" aria-hidden="true"></div>
+        <figcaption class="portrait__cap">Illustration on a stock photo<span class="cap-more"> (Esther Masscheleyn, Unsplash). A real analysis uses real fabric, in daylight</span>.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 5 · III · THE METHOD -->
+  <section class="chapter method" id="ch-3" data-sc-act="flow" data-chapter="III" data-chapter-title="The method">
+    <div class="method__grid">
+      <figure class="method__media" style="margin:0">
+        <div class="frame"><div class="method__stack" id="method-stack" data-sc-parallax="0.9">
+          <img class="is-active" src="assets/fabrics.webp" width="1600" height="1280" loading="lazy" alt="A stack of folded fabrics in soft neutrals, pinks and coral.">
+          <img src="assets/method-style.webp" width="1100" height="1650" loading="lazy" alt="A rail of cream, tan and brown knitwear seen through a shop window.">
+          <img src="assets/method-organise.webp" width="1100" height="1650" loading="lazy" alt="A tidy open wardrobe with shirts hung in neutral colours.">
+          <img src="assets/method-shopping.webp" width="1100" height="1650" loading="lazy" alt="Dresses and striped tops on rails in a clothing shop, with folded denim on the shelves above.">
+          <img src="assets/method-online.webp" width="1100" height="1650" loading="lazy" alt="An open laptop on a desk.">
+          <img src="assets/method-workshop.webp" width="1100" height="1650" loading="lazy" alt="Rolls of fabric in yellow, plum, red and grey.">
+        </div></div>
+        <figcaption class="credit method__now"><b id="method-num">01</b><span id="method-name">Personal colour analysis</span><span style="margin-left:auto">Photos: Unsplash</span></figcaption>
+      </figure>
+      <div>
+        <p class="ch-label" data-sc-in>III · The method</p>
+        <h2 class="h-display" data-sc-in>Personal styling services, and what you leave with.</h2>
+        <ol class="ledger" data-sc-in data-sc-stagger="60">
+          <li><h3>Personal colour analysis</h3><div><p>Find the seasonal colour palette that suits your skin tone, hair and eyes, and makes you look rested, not washed out.</p><p class="incl"><b>Includes</b> seasonal analysis, a personal swatch wallet, make-up colours, a wardrobe colour audit.</p></div></li>
+          <li><h3>Personal style consultation</h3><div><p>A personal style that fits your body shape, your life and where you want to go.</p><p class="incl"><b>Includes</b> body shape analysis, style direction, outfit building, a personal style guide.</p></div></li>
+          <li><h3>Wardrobe edit &amp; organisation</h3><div><p>Turn a crowded wardrobe into clothes you love and can actually put together.</p><p class="incl"><b>Includes</b> a full wardrobe audit, an organising system, a mix-and-match guide, a shopping list.</p></div></li>
+          <li><h3>Personal shopping</h3><div><p>Shop with a personal stylist and stop paying for mistakes, in store or online.</p><p class="incl"><b>Includes</b> a pre-shop consultation, shopping trips in Sydney, online help, budget planning.</p></div></li>
+          <li><h3>Online colour &amp; style consultations</h3><div><p>The same expertise from anywhere in Australia, over Zoom.</p><p class="incl"><b>Includes</b> online colour analysis, a virtual wardrobe review, a digital style guide, follow-up support.</p></div></li>
+          <li><h3>Group &amp; corporate workshops</h3><div><p>Interactive colour and style sessions for teams, events or a group of friends.</p><p class="incl"><b>Includes</b> corporate workshops, group colour analysis, team events, occasion styling.</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · IV · IN THEIR WORDS: travels sideways, on the visitor's colour -->
+  <section class="chapter words" id="ch-4" data-sc-act="pan" data-sc-span="3.2" data-chapter="IV" data-chapter-title="In their words">
+    <div data-sc-stage>
+      <div class="rail" data-sc-pan="0.04">
+        <div class="rail__lead">
+          <p class="ch-label">IV · In their words</p>
+          <h2 class="h-display">Client reviews, in their own words.</h2>
+        </div>
+        <figure class="quote"><blockquote>My online shopping experience with Rathi was perfect. Before meeting her, I was frustrated trying to buy pieces that worked together. She made shopping easy and fun.</blockquote><figcaption><b>Sarah M.</b> · Marketing professional</figcaption></figure>
+        <figure class="quote"><blockquote>She got it exactly right with me. I wanted to get out of my comfort zone and explore new looks and colours, and she was spot on with all her suggestions.</blockquote><figcaption><b>Louise K.</b> · Business owner</figcaption></figure>
+        <figure class="quote"><blockquote>Whether it’s your best colours, de-cluttering your wardrobe or a shopping trip, I highly recommend Rathi. I was extremely impressed with her natural eye for style.</blockquote><figcaption><b>Kathryn P.</b> · Executive</figcaption></figure>
+        <figure class="quote"><blockquote>The colour analysis was particularly useful and I’m thrilled with my new wardrobe. I never thought I could enjoy shopping, but Rathi made it effortless.</blockquote><figcaption><b>Zina B.</b> · Teacher</figcaption></figure>
+        <figure class="quote"><blockquote>It has only been three days and I have had compliments on my clothes already. She is so professional and personable, and an expert in her field.</blockquote><figcaption><b>Nicole K.</b> · Healthcare professional</figcaption></figure>
+        <figure class="quote"><blockquote>The colour consultation via Zoom worked perfectly. I finally understand why I’m drawn to certain colours, and I’ve stopped wasting money on clothes I don’t wear.</blockquote><figcaption><b>Heather K.</b> · Remote worker</figcaption></figure>
+        <p class="rail__end">Next could be you.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · V · RATHI -->
+  <section class="chapter rathi" id="ch-5" data-sc-act="flow" data-chapter="V" data-chapter-title="Rathi">
+    <div class="rathi__grid">
+      <div class="sc-stack" data-sc-in data-sc-stagger="70">
+        <p class="ch-label">V · Rathi</p>
+        <h2 class="h-display">Hi, I’m Rathi.</h2>
+        <p class="body">I’m a certified image consultant and personal stylist based in Sydney, Australia. My passion is helping women and men become the best version of themselves, with more confidence, clarity, fun and success.</p>
+        <p class="body">Every session is focused entirely on you: your colours, your style and a wardrobe that works, building a personal brand that is authentically yours. I’d love to be on your team, in person in Sydney or online from anywhere in Australia.</p>
+      </div>
+      <figure data-sc-in>
+        <img src="assets/about-placeholder.webp" width="1200" height="1797" loading="lazy" alt="Placeholder portrait, a stock photo standing in for Rathi.">
+        <figcaption class="credit">Placeholder stock photo. Rathi’s own portrait goes here.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 8 · COLOPHON: ends in the visitor's colour, and holds -->
+  <section class="chapter colophon" id="colophon" data-sc-act="flow" data-chapter="·" data-chapter-title="Book" data-ground="dark">
+    <div class="colophon__lead">
+      <p class="yours" id="yours"><span class="chips" id="yours-chips" aria-hidden="true"></span><span id="yours-text">Your colours, so far</span></p>
+      <p class="colophon__line" id="close-line">Your free 20-minute Style Discovery is where it starts. <a id="book" href="mailto:hello@vividbyrathi.com?subject=Free%20Style%20Discovery">Book a free Style Discovery</a>, and Rathi will find the colours that look like you.</p>
+    </div>
+    <div class="colophon__plate">
+      <p><b>Vivid by Rathi</b>Personal colour analysis &amp; styling. Sydney, NSW, and online Australia-wide.</p>
+      <p><b>Write</b><a href="mailto:hello@vividbyrathi.com">hello@vividbyrathi.com</a></p>
+      <p><b>Hours</b>Mon to Fri, 9am to 6pm<br>Sat, 10am to 4pm</p>
+      <p><b>Colophon</b>Set in Bodoni Moda and Geist. Photographs from Unsplash. Design prototype.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- One drape shape, shared by every season. viewBox 0 0 100 150 = the portrait's 2:3 frame. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Key light from camera-left, the same light that falls on her face. -->
+    <radialGradient id="d-key" cx=".38" cy=".02" r=".95" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff" stop-opacity=".10"/>
+      <stop offset=".3" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".6" stop-color="#000" stop-opacity=".36"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".78"/>
+    </radialGradient>
+    <linearGradient id="d-fall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset=".35" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".45"/>
+    </linearGradient>
+    <filter id="d-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.6"/></filter>
+    <filter id="d-feather" x="-2%" y="-2%" width="104%" height="104%"><feGaussianBlur stdDeviation=".22"/></filter>
+    <!-- Fine weave: noise, greyed, kept faint. -->
+    <filter id="d-weave" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="2.4 1.8" numOctaves="2" seed="7"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .22 -.03"/>
+    </filter>
+    <clipPath id="d-clip"><path d="M0 104 C8 97,20 93.6,33 92.6 C39.5 92.1,43.6 92.8,46.6 95 C49.6 97.4,53.4 98.4,57 97.6 C60.4 96.8,62.8 94.2,66 92.6 C70 91.2,84 91.8,100 98.5 L100 150 L0 150 Z"/></clipPath>
+    <g id="drape-shape" filter="url(#d-feather)">
+      <path d="M0 104 C8 97,20 93.6,33 92.6 C39.5 92.1,43.6 92.8,46.6 95 C49.6 97.4,53.4 98.4,57 97.6 C60.4 96.8,62.8 94.2,66 92.6 C70 91.2,84 91.8,100 98.5 L100 150 L0 150 Z" style="fill:var(--fill)"/>
+      <g clip-path="url(#d-clip)">
+        <!-- Folds falling from each shoulder toward the centre. -->
+        <g filter="url(#d-blur)">
+          <path d="M12 98 C19 114,22 128,17 150 L27 150 C30 128,26 113,19 97 Z" fill="#000" fill-opacity=".20"/>
+          <path d="M28 93 C35 108,42 124,47 150 L51 150 C46 124,40 108,33 93 Z" fill="#fff" fill-opacity=".08"/>
+          <path d="M47 97 C49 116,55 132,61 150 L69 150 C61 132,55 116,52 98 Z" fill="#000" fill-opacity=".14"/>
+          <path d="M72 92 C69 106,71 126,79 150 L84 150 C77 126,75 106,77 92 Z" fill="#000" fill-opacity=".22"/>
+          <path d="M88 95 C90 110,94 124,100 136 L100 128 C96 118,93 108,92 96 Z" fill="#fff" fill-opacity=".05"/>
+        </g>
+        <rect x="0" y="88" width="100" height="62" filter="url(#d-weave)" style="mix-blend-mode:overlay"/>
+        <rect x="0" y="88" width="100" height="62" fill="url(#d-key)"/>
+        <rect x="0" y="88" width="100" height="62" fill="url(#d-fall)"/>
+        <!-- The fabric rolling over at the neckline and shoulders. -->
+        <path d="M0 104 C8 97,20 93.6,33 92.6 C39.5 92.1,43.6 92.8,46.6 95 C49.6 97.4,53.4 98.4,57 97.6 C60.4 96.8,62.8 94.2,66 92.6 C70 91.2,84 91.8,100 98.5" fill="none" stroke="#000" stroke-opacity=".42" stroke-width="2.6" filter="url(#d-blur)" transform="translate(0 2)"/>
+        <path d="M0 104 C8 97,20 93.6,33 92.6 C39.5 92.1,43.6 92.8,46.6 95 C49.6 97.4,53.4 98.4,57 97.6 C60.4 96.8,62.8 94.2,66 92.6 C70 91.2,84 91.8,100 98.5" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width=".6" transform="translate(0 .5)"/>
+      </g>
+    </g>
+  </defs>
+</svg>
+
+<script src="scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // ---------------------------------------------------------------- seasons
+  const SEASONS = {
+    grey:   { name: 'The grey cape', fill: '#84878A', desc: 'Every session starts in neutral grey, so nothing you’re wearing gets in the way.', chips: ['#5E6265', '#84878A', '#A9ACAE', '#D3D5D6'] },
+    winter: { name: 'Winter', fill: '#1D3C8F', desc: 'Cool, clear and deep. High contrast suits you: jewel tones, true red, crisp white.', chips: ['#0E1A3A', '#1D3C8F', '#B0153A', '#0F7B6C'], article: 'a' },
+    summer: { name: 'Summer', fill: '#B57E95', desc: 'Cool and soft. Misty, gentle colours with a little grey in them.', chips: ['#6F8FB5', '#B57E95', '#9A86B8', '#78A39E'], article: 'a' },
+    autumn: { name: 'Autumn', fill: '#A3502A', desc: 'Warm, muted and rich. Earthy colours with depth.', chips: ['#6B6A2A', '#A3502A', '#C99430', '#3E5A47'], article: 'an' },
+    spring: { name: 'Spring', fill: '#EE7A5E', desc: 'Warm, clear and light. Fresh, bright colours with sunshine in them.', chips: ['#EE7A5E', '#F0C24B', '#2FB3A0', '#8CC063'], article: 'a' },
+  };
+  const ORDER = ['winter', 'summer', 'autumn', 'spring'];
+  // Each season slides in over [start, start + 0.12] of the act, then holds.
+  const START = { winter: 0.12, summer: 0.33, autumn: 0.54, spring: 0.75 };
+  const WIPE = 0.12;
+  const HOLD = (s) => START[s] + WIPE + 0.04; // where a picked season sits fully laid
+
+  const act = document.getElementById('ch-2');
+  const layers = [...act.querySelectorAll('.drape[data-season]')];
+  const reflect = document.getElementById('reflect');
+  const readout = document.getElementById('readout');
+  const rName = document.getElementById('readout-name');
+  const rDesc = document.getElementById('readout-desc');
+  const rChips = document.getElementById('readout-chips');
+  const pickers = [...act.querySelectorAll('[data-pick]')];
+
+  let picked = null;
+  try { picked = localStorage.getItem('vivid-season'); } catch (e) {}
+  if (!SEASONS[picked] || picked === 'grey') picked = null;
+  let lastSeen = null;  // the last season fully laid while scrolling
+  let shown = 'grey';
+
+  const chipsHTML = (s) => SEASONS[s].chips.map((c) => `<span style="--c:${c}"></span>`).join('');
+
+  function setReadout(s) {
+    if (s === shown) return;
+    shown = s;
+    const apply = () => {
+      rName.textContent = SEASONS[s].name;
+      rDesc.textContent = SEASONS[s].desc;
+      rChips.innerHTML = chipsHTML(s);
+      readout.classList.remove('is-swapping');
+    };
+    if (reduce) apply(); else { readout.classList.add('is-swapping'); setTimeout(apply, 180); }
+    reflect.style.setProperty('--reflect', s === 'grey' ? 'transparent' : SEASONS[s].fill);
+  }
+  rChips.innerHTML = chipsHTML('grey');
+
+  function setPageSeason(s) {
+    if (s) root.dataset.season = s; else delete root.dataset.season;
+    const chosen = picked || lastSeen;
+    document.getElementById('yours-chips').innerHTML = chosen ? chipsHTML(chosen) : '';
+    document.getElementById('yours-text').textContent = chosen
+      ? (picked ? `You chose ${SEASONS[chosen].name}` : `You lingered on ${SEASONS[chosen].name}`)
+      : 'Your colours are waiting';
+    const book = document.getElementById('book');
+    const subject = chosen
+      ? `Free Style Discovery (I think I’m ${SEASONS[chosen].article} ${SEASONS[chosen].name})`
+      : 'Free Style Discovery';
+    book.href = `mailto:hello@vividbyrathi.com?subject=${encodeURIComponent(subject)}`;
+  }
+
+  function progress() {
+    const v = parseFloat(act.style.getPropertyValue('--sc-p'));
+    if (!Number.isNaN(v)) return v;
+    const r = act.getBoundingClientRect();
+    return Math.min(1, Math.max(0, -r.top / Math.max(r.height - innerHeight, 1)));
+  }
+
+  let lastP = -1;
+  function frame() {
+    const p = progress();
+    if (p !== lastP) {
+      lastP = p;
+      let top = 'grey';
+      for (const el of layers) {
+        const s = el.dataset.season;
+        let k = Math.min(1, Math.max(0, (p - START[s]) / WIPE));
+        k = k * k * (3 - 2 * k);                 // smoothstep: settles like fabric
+        if (reduce) k = k > 0.5 ? 1 : 0;
+        el.style.setProperty('--k', k.toFixed(4));
+        el.style.visibility = k > 0 ? 'visible' : 'hidden';
+        if (k > 0.5) top = s;
+      }
+      setReadout(top);
+      if (top !== 'grey' && p > 0) lastSeen = top;
+
+      // Inside the session the page follows the drape; outside, it keeps the visitor's colour.
+      const inside = p > 0.001 && p < 0.999;
+      setPageSeason(inside ? top : (picked || (p >= 0.999 ? lastSeen : null)));
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // Picking a season: remember it, lay that drape, and let it regrade the rest of the page.
+  for (const b of pickers) {
+    b.addEventListener('click', () => {
+      picked = b.dataset.pick;
+      try { localStorage.setItem('vivid-season', picked); } catch (e) {}
+      pickers.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      const top = act.getBoundingClientRect().top + scrollY;
+      const travel = act.offsetHeight - innerHeight;
+      scrollTo({ top: top + HOLD(picked) * travel, behavior: reduce ? 'auto' : 'smooth' });
+      setPageSeason(picked);
+    });
+  }
+  if (picked) pickers.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.pick === picked)));
+  setPageSeason(null);
+
+  // ---------------------------------------------------------------- the method
+  // The photo beside the ledger follows the service row crossing the reading line.
+  const mStack = [...document.querySelectorAll('#method-stack img')];
+  const mRows = [...document.querySelectorAll('.ledger li')];
+  const mNum = document.getElementById('method-num');
+  const mName = document.getElementById('method-name');
+  const setMethod = (i) => {
+    mStack.forEach((im, k) => im.classList.toggle('is-active', k === i));
+    mRows.forEach((li, k) => li.classList.toggle('is-active', k === i));
+    mNum.textContent = String(i + 1).padStart(2, '0');
+    mName.textContent = mRows[i].querySelector('h3').textContent;
+  };
+  setMethod(0);
+  const phone = matchMedia('(max-width: 860px)').matches;
+  const mIO = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) setMethod(mRows.indexOf(e.target));
+  }, { rootMargin: phone ? '-62% 0px -37% 0px' : '-50% 0px -49% 0px' });
+  mRows.forEach((li) => mIO.observe(li));
+
+  // ---------------------------------------------------------------- folio
+  const folio = document.getElementById('folio');
+  const fNum = document.getElementById('folio-num');
+  const fTitle = document.getElementById('folio-title');
+  const chapters = [...document.querySelectorAll('[data-chapter]')];
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const c = e.target;
+      fNum.textContent = c.dataset.chapter;
+      fTitle.textContent = c.dataset.chapterTitle;
+      folio.classList.toggle('is-dark', c.dataset.ground === 'dark');
+    }
+  }, { rootMargin: '-49% 0px -50% 0px' });
+  chapters.forEach((c) => io.observe(c));
+
+  const dlg = document.getElementById('contents');
+  document.getElementById('contents-open').addEventListener('click', () => dlg.showModal());
+  document.getElementById('contents-close').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => {
+    if (e.target === dlg) dlg.close();
+    if (e.target.closest('a')) dlg.close();
+  });
+
+  // ---------------------------------------------------------------- title page depth
+  // The swatches lean with the pointer, each plane by its own depth. Additive only.
+  if (fine && !reduce) {
+    const inners = [...document.querySelectorAll('.plane__inner')];
+    const title = document.querySelector('.title');
+    title.addEventListener('pointermove', (e) => {
+      const mx = e.clientX / innerWidth - 0.5, my = e.clientY / innerHeight - 0.5;
+      for (const el of inners) {
+        const d = +el.dataset.depth;
+        el.style.transform = `translate3d(${(-mx * d).toFixed(1)}px, ${(-my * d).toFixed(1)}px, 0)`;
+      }
+    });
+    title.addEventListener('pointerleave', () => inners.forEach((el) => (el.style.transform = '')));
+  }
+})();
+</script>
+</body>
+</html>
