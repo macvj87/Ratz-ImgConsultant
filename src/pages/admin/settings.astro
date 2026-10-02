@@ -27,6 +27,7 @@ if (Astro.request.method === 'POST') {
   const url = (k: string) => (/^https?:\/\//.test(get(k)) ? get(k) : '');
   const updated: Settings = {
     siteName: get('siteName') || settings.siteName,
+    seoTitle: get('seoTitle'),
     seoDescription: get('seoDescription'),
     footerText: get('footerText'),
     location: get('location'),
@@ -57,6 +58,7 @@ const colours = [
 ] as const;
 const text = [
   { key: 'siteName', label: 'Business name' },
+  { key: 'seoTitle', label: 'Title for Google', help: 'The headline shown for your home page in search results. Keep it under 60 characters.' },
   { key: 'seoDescription', label: 'Description for Google', area: true, help: 'One or two sentences shown under your site in search results.' },
   { key: 'footerText', label: 'Footer text', area: true },
 ] as const;

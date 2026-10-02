@@ -17,6 +17,7 @@ export type Theme = {
 
 export type Settings = {
   siteName: string;
+  seoTitle: string; // home page title in search results
   seoDescription: string;
   footerText: string;
   location: string;

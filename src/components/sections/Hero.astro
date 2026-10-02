@@ -26,7 +26,7 @@ const d = section.data;
       <div class="hero-photo relative order-1 mx-auto w-full max-w-md lg:order-2">
         <div class="absolute inset-0 translate-x-4 translate-y-4 rounded-2xl border-2 border-primary/60" aria-hidden="true"></div>
         <div class="relative overflow-hidden rounded-2xl shadow-2xl">
-          <img src={img(d.image, 800, 800)} alt={d.highlight || d.heading} width="800" height="800"
+          <img src={img(d.image, 800, 800)} alt={[d.heading, d.highlight].filter(Boolean).join(' ')} width="800" height="800"
             class="w-full scale-110" data-parallax fetchpriority="high" />
         </div>
       </div>

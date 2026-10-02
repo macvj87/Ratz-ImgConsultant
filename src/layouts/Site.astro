@@ -14,7 +14,7 @@ interface Props {
 }
 const { settings, sections, title, description, image } = Astro.props;
 const t = settings.theme;
-const pageTitle = title ? `${title} | ${settings.siteName}` : settings.siteName;
+const pageTitle = title ? `${title} | ${settings.siteName}` : settings.seoTitle || settings.siteName;
 const desc = description || settings.seoDescription;
 const onHome = Astro.url.pathname === '/';
 // Menu links: sections that have a menu label and are showing.
@@ -36,6 +36,7 @@ const ogImage = image ? new URL(image, Astro.url).href : undefined;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={desc} />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_AU" />
     {ogImage && <meta property="og:image" content={ogImage} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
